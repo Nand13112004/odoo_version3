@@ -2,15 +2,20 @@
 
 import { useEffect, useState } from 'react';
 import { maintenance as maintenanceApi, vehicles as vehiclesApi, type Maintenance, type Vehicle } from '@/lib/api';
+import { useAuth } from '@/context/AuthContext';
+import { can, Permissions } from '@/lib/permissions';
 import { Wrench, Plus } from 'lucide-react';
 
 export default function MaintenancePage() {
+  const { user } = useAuth();
   const [list, setList] = useState<Maintenance[]>([]);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ vehicleId: '', description: '', cost: '', severity: 'Medium' });
   const [submitting, setSubmitting] = useState(false);
+
+  const canAdd = can(user?.role, Permissions.MAINTENANCE.add);
 
   const load = () => {
     Promise.all([
@@ -23,6 +28,7 @@ export default function MaintenancePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!canAdd) return;
     setSubmitting(true);
     try {
       await maintenanceApi.create({
@@ -54,9 +60,11 @@ export default function MaintenancePage() {
           <h1 className="text-3xl font-bold neon-text">Maintenance</h1>
           <p className="mt-1 text-zinc-400">Records and scheduling</p>
         </div>
-        <button onClick={() => setShowForm(true)} className="flex items-center gap-2 rounded-lg bg-[#00ffc8]/20 px-4 py-2 text-[#00ffc8] hover:bg-[#00ffc8]/30">
-          <Plus className="h-4 w-4" /> Add
-        </button>
+        {canAdd && (
+          <button onClick={() => setShowForm(true)} className="flex items-center gap-2 rounded-lg bg-[#00ffc8]/20 px-4 py-2 text-[#00ffc8] hover:bg-[#00ffc8]/30">
+            <Plus className="h-4 w-4" /> Add
+          </button>
+        )}
       </div>
       <div className="glass neon-border rounded-xl overflow-hidden">
         <table className="w-full">
@@ -89,7 +97,7 @@ export default function MaintenancePage() {
         {list.length === 0 && !showForm && <div className="py-12 text-center text-zinc-500">No maintenance records</div>}
       </div>
 
-      {showForm && (
+      {showForm && canAdd && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
           <div className="glass neon-border w-full max-w-md rounded-xl p-6">
             <h3 className="font-semibold text-white">Add Maintenance</h3>

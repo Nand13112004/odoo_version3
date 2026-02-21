@@ -15,6 +15,7 @@ import {
   MessageSquare,
   LogOut,
   FileDown,
+  Fuel,
 } from 'lucide-react';
 import { Permissions, can } from '@/lib/permissions';
 
@@ -25,6 +26,7 @@ const nav = [
   { href: '/dashboard/trips', label: 'Trip Dispatcher', icon: MapPin, allowed: Permissions.NAV.trips },
   { href: '/dashboard/maintenance', label: 'Maintenance', icon: Wrench, allowed: Permissions.NAV.maintenance },
   { href: '/dashboard/trips/completed', label: 'Completed Trips', icon: CheckSquare, allowed: Permissions.NAV.completed },
+  { href: '/dashboard/fuel-logs', label: 'Fuel & Expense', icon: Fuel, allowed: Permissions.FUEL_LOGS.view },
   { href: '/dashboard/analytics', label: 'Analytics', icon: BarChart3, allowed: Permissions.NAV.analytics },
   { href: '/dashboard/map', label: 'Live Map', icon: Map, allowed: Permissions.NAV.map },
   { href: '/dashboard/ai-chat', label: 'AI Assistant', icon: MessageSquare, allowed: Permissions.NAV.aiChat },

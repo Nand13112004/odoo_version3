@@ -1,6 +1,10 @@
 'use client';
 
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { exportApi } from '@/lib/api';
+import { useAuth } from '@/context/AuthContext';
+import { can, Permissions } from '@/lib/permissions';
 import { FileDown } from 'lucide-react';
 
 function downloadUrl(url: string, filename: string) {
@@ -18,6 +22,14 @@ function downloadUrl(url: string, filename: string) {
 }
 
 export default function ExportPage() {
+  const { user } = useAuth();
+  const router = useRouter();
+  useEffect(() => {
+    if (!can(user?.role, Permissions.ACTIONS.exportReports)) router.replace('/dashboard/access-denied');
+  }, [user?.role, router]);
+
+  if (!can(user?.role, Permissions.ACTIONS.exportReports)) return null;
+
   return (
     <div className="p-8">
       <h1 className="text-3xl font-bold neon-text">Export</h1>

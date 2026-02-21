@@ -144,14 +144,22 @@ export interface Maintenance {
 }
 
 export interface DashboardStats {
-  activeFleetCount: number;
-  vehiclesInMaintenance: number;
-  utilizationPercent: number;
-  pendingCargo: number;
-  highRiskVehicles: number;
-  monthlyProfit: number;
+  scope?: 'full' | 'limited' | 'compliance' | 'financial';
+  activeFleetCount?: number;
+  vehiclesInMaintenance?: number;
+  utilizationPercent?: number;
+  pendingCargo?: number;
+  highRiskVehicles?: number;
+  monthlyProfit?: number;
   monthlyRevenue?: number;
   totalFleet?: number;
+  totalOperationalCost?: number;
+  availableVehiclesCount?: number;
+  availableDriversCount?: number;
+  suspendedDriversCount?: number;
+  suspendedDrivers?: { _id: string; name: string; status: string; licenseExpiry?: string }[];
+  complianceAlerts?: string[];
+  revenueVsExpense?: { revenue: number; expense: number };
 }
 
 export interface ChartData {

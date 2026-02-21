@@ -2,10 +2,15 @@
 
 import { useEffect, useState } from 'react';
 import { trips as tripsApi, type Trip } from '@/lib/api';
+import { useAuth } from '@/context/AuthContext';
+import { can, Permissions } from '@/lib/permissions';
 
 export default function CompletedTripsPage() {
+  const { user } = useAuth();
   const [list, setList] = useState<Trip[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const canView = can(user?.role, Permissions.NAV.completed);
 
   useEffect(() => {
     tripsApi.list('Completed').then((r) => {
@@ -17,6 +22,17 @@ export default function CompletedTripsPage() {
     return (
       <div className="p-8">
         <div className="h-64 animate-pulse rounded-xl bg-zinc-800/50" />
+      </div>
+    );
+  }
+
+  if (!canView) {
+    return (
+      <div className="p-8">
+        <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-6 text-center text-red-400">
+          <p className="font-medium">Access Denied</p>
+          <p className="mt-1 text-sm">You do not have permission to view completed trips.</p>
+        </div>
       </div>
     );
   }

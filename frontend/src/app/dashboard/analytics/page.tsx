@@ -17,7 +17,7 @@ export default function AnalyticsPage() {
 
   useEffect(() => {
     if (!can(user?.role, Permissions.ACTIONS.viewAnalytics)) {
-      router.replace('/dashboard');
+      router.replace('/dashboard/access-denied');
       return;
     }
     dashboardApi.charts().then((r) => setCharts(r.data as ChartData)).catch(() => setCharts(null)).finally(() => setLoading(false));
