@@ -1,28 +1,50 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { auth } from '@/lib/api';
+import { auth, invites } from '@/lib/api';
 import type { User } from '@/lib/api';
 import Link from 'next/link';
 
-const ROLES = ['Manager', 'Dispatcher', 'SafetyOfficer', 'FinancialAnalyst'];
-
 export default function RegisterPage() {
+  const searchParams = useSearchParams();
+  const inviteToken = searchParams?.get('invite') || undefined;
   const { setUser } = useAuth();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('Dispatcher');
+  const [role, setRole] = useState('Manager');
+  const [communityName, setCommunityName] = useState('');
+  const [inviteInfo, setInviteInfo] = useState<{ email: string; role: string; communityName?: string } | null>(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (inviteToken) {
+      invites
+        .validate(inviteToken)
+        .then((r) => {
+          if (r.success && (r.data as { valid?: boolean })?.valid) {
+            const d = r.data as { email?: string; role?: string; communityName?: string };
+            setInviteInfo({ email: d.email || '', role: d.role || 'Dispatcher', communityName: d.communityName });
+            setEmail(d.email || '');
+            setRole(d.role || 'Dispatcher');
+          }
+        })
+        .catch(() => setError('Invalid or expired invite link'));
+    }
+  }, [inviteToken]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setLoading(true);
     try {
-      const res = await auth.register({ name, email, password, role });
+      const payload = inviteToken
+        ? { name, email, password, inviteToken }
+        : { name, email, password, role: 'Manager', communityName };
+      const res = await auth.register(payload);
       const data = res.data as { token?: string; user?: User } | undefined;
       if (res.success && data?.token) {
         localStorage.setItem('token', data.token);
@@ -54,12 +76,24 @@ export default function RegisterPage() {
             <label className="mb-1 block text-sm text-zinc-400">Password</label>
             <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full rounded-lg border border-zinc-600 bg-zinc-900/50 px-4 py-2 text-white" minLength={6} required />
           </div>
-          <div>
-            <label className="mb-1 block text-sm text-zinc-400">Role</label>
-            <select value={role} onChange={(e) => setRole(e.target.value)} className="w-full rounded-lg border border-zinc-600 bg-zinc-900/50 px-4 py-2 text-white">
-              {ROLES.map((r) => <option key={r} value={r}>{r}</option>)}
-            </select>
-          </div>
+          {!inviteToken && (
+            <div>
+              <label className="mb-1 block text-sm text-zinc-400">Community / Company Name</label>
+              <input
+                type="text"
+                value={communityName}
+                onChange={(e) => setCommunityName(e.target.value)}
+                className="w-full rounded-lg border border-zinc-600 bg-zinc-900/50 px-4 py-2 text-white"
+                placeholder="Your company or team name"
+                required={!inviteToken}
+              />
+            </div>
+          )}
+          {inviteToken && inviteInfo && (
+            <p className="rounded-lg border border-[#00ffc8]/30 bg-[#00ffc8]/5 px-3 py-2 text-sm text-[#00ffc8]">
+              Joining: {inviteInfo.communityName || 'Community'} as {inviteInfo.role}
+            </p>
+          )}
           {error && <p className="text-sm text-red-400">{error}</p>}
           <button type="submit" disabled={loading} className="w-full rounded-lg bg-[#00ffc8]/20 py-2.5 font-medium text-[#00ffc8] hover:bg-[#00ffc8]/30 disabled:opacity-50">
             {loading ? 'Creating...' : 'Register'}

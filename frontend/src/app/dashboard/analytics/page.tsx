@@ -2,12 +2,27 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { dashboard as dashboardApi, type ChartData } from '@/lib/api';
+import { dashboard as dashboardApi, exportApi, type ChartData } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
-import { can, Permissions } from '@/lib/permissions';
+import { can, Permissions, ROLES } from '@/lib/permissions';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
+import { FileDown } from 'lucide-react';
 
 const COLORS = ['#00ffc8', '#00cc9e', '#009973', '#00664d'];
+
+function downloadUrl(url: string, filename: string) {
+  const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
+  fetch(url, { headers: token ? { Authorization: `Bearer ${token}` } : {} })
+    .then((r) => r.blob())
+    .then((blob) => {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    })
+    .catch(() => alert('Download failed'));
+}
 
 export default function AnalyticsPage() {
   const { user } = useAuth();
@@ -33,8 +48,22 @@ export default function AnalyticsPage() {
 
   return (
     <div className="p-8">
-      <h1 className="text-3xl font-bold neon-text">Analytics</h1>
-      <p className="mt-1 text-zinc-400">Fleet performance and ROI</p>
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold neon-text">Operational Analytics</h1>
+          <p className="mt-1 text-zinc-400">Fuel efficiency, Vehicle ROI, Cost-per-km, Fleet utilization</p>
+        </div>
+        {can(user?.role, Permissions.ACTIONS.exportReports) && (
+          <div className="flex gap-2">
+            <button onClick={() => downloadUrl(exportApi.vehiclesCsv(), 'vehicles.csv')} className="flex items-center gap-2 rounded-lg border border-zinc-600 px-3 py-2 text-sm text-zinc-300 hover:bg-zinc-800">
+              <FileDown className="h-4 w-4" /> CSV
+            </button>
+            <button onClick={() => downloadUrl(exportApi.reportPdf(), 'fleet-report.pdf')} className="flex items-center gap-2 rounded-lg bg-[#00ffc8]/20 px-3 py-2 text-sm text-[#00ffc8] hover:bg-[#00ffc8]/30">
+              <FileDown className="h-4 w-4" /> PDF
+            </button>
+          </div>
+        )}
+      </div>
       <div className="mt-8 grid gap-6 lg:grid-cols-2">
         <div className="glass neon-border rounded-xl p-5">
           <h2 className="mb-4 font-semibold text-white">Revenue vs Expense by Vehicle</h2>

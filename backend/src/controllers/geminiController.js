@@ -8,7 +8,7 @@ const Trip = require('../models/Trip');
 
 exports.analyzeVehicleRisk = async (req, res, next) => {
   try {
-    const vehicle = await Vehicle.findById(req.params.id);
+    const vehicle = await Vehicle.findOne({ _id: req.params.id, communityId: req.user.communityId });
     if (!vehicle) return res.status(404).json({ success: false, message: 'Vehicle not found' });
     const result = await analyzeVehicleRisk(vehicle);
     res.json({ success: true, data: result });
@@ -19,8 +19,9 @@ exports.analyzeVehicleRisk = async (req, res, next) => {
 
 exports.financialAdvice = async (req, res, next) => {
   try {
-    const vehicles = await Vehicle.find().lean();
-    const trips = await Trip.find({ status: 'Completed' }).lean();
+    const communityId = req.user.communityId;
+    const vehicles = await Vehicle.find({ communityId }).lean();
+    const trips = await Trip.find({ communityId, status: 'Completed' }).lean();
     const result = await generateFinancialAdvice({ vehicles, trips });
     res.json({ success: true, data: result });
   } catch (err) {
@@ -31,8 +32,9 @@ exports.financialAdvice = async (req, res, next) => {
 exports.naturalLanguageQuery = async (req, res, next) => {
   try {
     const { query } = req.body;
-    const vehicles = await Vehicle.find().lean();
-    const trips = await Trip.find().lean();
+    const communityId = req.user.communityId;
+    const vehicles = await Vehicle.find({ communityId }).lean();
+    const trips = await Trip.find({ communityId }).lean();
     const result = await naturalLanguageQuery(query || '', { vehicles, trips });
     res.json({ success: true, data: result });
   } catch (err) {

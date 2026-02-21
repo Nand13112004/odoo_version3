@@ -4,17 +4,26 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { vehicles as vehiclesApi, gemini, maintenance as maintenanceApi, type Vehicle, type Maintenance } from '@/lib/api';
-import { ArrowLeft, Sparkles, Wrench } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
+import { can, Permissions } from '@/lib/permissions';
+import { ArrowLeft, Sparkles, Wrench, Edit2 } from 'lucide-react';
 
 export default function VehicleDetailPage() {
   const params = useParams();
   const id = params.id as string;
+  const { user } = useAuth();
   const [vehicle, setVehicle] = useState<Vehicle | null>(null);
   const [maintenances, setMaintenances] = useState<Maintenance[]>([]);
   const [aiRisk, setAiRisk] = useState<{ riskScore: number; suggestion: string; financialImpact: string } | null>(null);
   const [loading, setLoading] = useState(true);
+  const [odometerInput, setOdometerInput] = useState('');
+  const [statusUpdating, setStatusUpdating] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editForm, setEditForm] = useState({ name: '', licensePlate: '', capacity: 0, acquisitionCost: 0, fuelEfficiency: 0 });
 
-  useEffect(() => {
+  const canEdit = can(user?.role, Permissions.VEHICLES.edit);
+
+  const load = () => {
     if (!id) return;
     Promise.all([
       vehiclesApi.get(id).then((r) => r.data as Vehicle | undefined),
@@ -24,7 +33,21 @@ export default function VehicleDetailPage() {
       setVehicle(v ?? null);
       setMaintenances(m ?? []);
       setAiRisk(ai ?? null);
+      if (v) {
+        setOdometerInput(String(v.odometer ?? 0));
+        setEditForm({
+          name: v.name,
+          licensePlate: v.licensePlate,
+          capacity: v.capacity,
+          acquisitionCost: v.acquisitionCost,
+          fuelEfficiency: v.fuelEfficiency ?? 0,
+        });
+      }
     }).finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    load();
   }, [id]);
 
   if (loading || !vehicle) {
@@ -42,6 +65,40 @@ export default function VehicleDetailPage() {
     Retired: 'bg-zinc-500/20 text-zinc-400',
   };
 
+  const handleOdometerSave = async () => {
+    const val = Number(odometerInput);
+    if (isNaN(val) || val < 0) return;
+    try {
+      await vehiclesApi.update(id, { odometer: val });
+      setVehicle((v) => (v ? { ...v, odometer: val } : null));
+    } catch {
+      alert('Failed to update odometer');
+    }
+  };
+
+  const handleStatusChange = async (status: string) => {
+    setStatusUpdating(true);
+    try {
+      await vehiclesApi.update(id, { status });
+      setVehicle((v) => (v ? { ...v, status } : null));
+    } catch {
+      alert('Failed to update status');
+    } finally {
+      setStatusUpdating(false);
+    }
+  };
+
+  const handleEditSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      await vehiclesApi.update(id, editForm);
+      setShowEditModal(false);
+      load();
+    } catch {
+      alert('Failed to update vehicle');
+    }
+  };
+
   return (
     <div className="p-8">
       <Link href="/dashboard/vehicles" className="mb-6 inline-flex items-center gap-2 text-sm text-zinc-400 hover:text-[#00ffc8]">
@@ -56,12 +113,55 @@ export default function VehicleDetailPage() {
               {vehicle.status}
             </span>
           </div>
+          {canEdit && (
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setShowEditModal(true)}
+                className="flex items-center gap-2 rounded-lg border border-zinc-600 px-3 py-1.5 text-sm text-zinc-300 hover:bg-zinc-800"
+              >
+                <Edit2 className="h-4 w-4" /> Edit
+              </button>
+            </div>
+          )}
         </div>
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <div><p className="text-xs text-zinc-500">Capacity (kg)</p><p className="font-medium text-white">{vehicle.capacity}</p></div>
-          <div><p className="text-xs text-zinc-500">Odometer</p><p className="font-medium text-white">{vehicle.odometer?.toLocaleString() ?? '-'}</p></div>
+          <div>
+            <p className="text-xs text-zinc-500">Odometer</p>
+            {canEdit ? (
+              <div className="flex items-center gap-2">
+                <input
+                  type="number"
+                  min={0}
+                  value={odometerInput}
+                  onChange={(e) => setOdometerInput(e.target.value)}
+                  onBlur={handleOdometerSave}
+                  className="w-28 rounded border border-zinc-600 bg-zinc-800 px-2 py-1 text-white"
+                />
+              </div>
+            ) : (
+              <p className="font-medium text-white">{vehicle.odometer?.toLocaleString() ?? '-'}</p>
+            )}
+          </div>
           <div><p className="text-xs text-zinc-500">Acquisition Cost</p><p className="font-medium text-white">${vehicle.acquisitionCost?.toLocaleString() ?? '-'}</p></div>
           <div><p className="text-xs text-zinc-500">Fuel efficiency (km/L)</p><p className="font-medium text-white">{vehicle.fuelEfficiency ?? '-'}</p></div>
+          <div>
+            <p className="text-xs text-zinc-500">Status</p>
+            {canEdit && vehicle.status !== 'On Trip' ? (
+              <select
+                value={vehicle.status}
+                disabled={statusUpdating}
+                onChange={(e) => handleStatusChange(e.target.value)}
+                className="rounded border border-zinc-600 bg-zinc-800 px-2 py-1 text-sm text-white"
+              >
+                <option value="Available">Available</option>
+                <option value="In Shop">Out of Service (In Shop)</option>
+                <option value="Retired">Retired</option>
+              </select>
+            ) : (
+              <p className="font-medium text-white">{vehicle.status}</p>
+            )}
+          </div>
           <div><p className="text-xs text-zinc-500">Risk Score</p><p className="font-medium text-white">{vehicle.riskScore ?? 0}</p></div>
           <div><p className="text-xs text-zinc-500">Total Revenue</p><p className="font-medium text-white">${vehicle.totalRevenue?.toLocaleString() ?? '0'}</p></div>
           <div><p className="text-xs text-zinc-500">Total Maintenance</p><p className="font-medium text-white">${vehicle.totalMaintenanceCost?.toLocaleString() ?? '0'}</p></div>
@@ -90,6 +190,42 @@ export default function VehicleDetailPage() {
           </ul>
         </div>
       </div>
+
+      {showEditModal && canEdit && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+          <div className="glass neon-border w-full max-w-md rounded-xl p-6">
+            <h3 className="font-semibold text-white">Edit Vehicle</h3>
+            <form onSubmit={handleEditSave} className="mt-4 space-y-3">
+              <div>
+                <label className="block text-sm text-zinc-400">Name</label>
+                <input value={editForm.name} onChange={(e) => setEditForm((f) => ({ ...f, name: e.target.value }))} className="mt-1 w-full rounded-lg border border-zinc-600 bg-zinc-900/50 px-3 py-2 text-white" required />
+              </div>
+              <div>
+                <label className="block text-sm text-zinc-400">License Plate</label>
+                <input value={editForm.licensePlate} onChange={(e) => setEditForm((f) => ({ ...f, licensePlate: e.target.value }))} className="mt-1 w-full rounded-lg border border-zinc-600 bg-zinc-900/50 px-3 py-2 text-white" required />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-sm text-zinc-400">Capacity (kg)</label>
+                  <input type="number" min={0} value={editForm.capacity} onChange={(e) => setEditForm((f) => ({ ...f, capacity: Number(e.target.value) }))} className="mt-1 w-full rounded-lg border border-zinc-600 bg-zinc-900/50 px-3 py-2 text-white" />
+                </div>
+                <div>
+                  <label className="block text-sm text-zinc-400">Acquisition Cost</label>
+                  <input type="number" min={0} value={editForm.acquisitionCost} onChange={(e) => setEditForm((f) => ({ ...f, acquisitionCost: Number(e.target.value) }))} className="mt-1 w-full rounded-lg border border-zinc-600 bg-zinc-900/50 px-3 py-2 text-white" />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm text-zinc-400">Fuel efficiency (km/L)</label>
+                <input type="number" min={0} step={0.1} value={editForm.fuelEfficiency} onChange={(e) => setEditForm((f) => ({ ...f, fuelEfficiency: Number(e.target.value) }))} className="mt-1 w-full rounded-lg border border-zinc-600 bg-zinc-900/50 px-3 py-2 text-white" />
+              </div>
+              <div className="mt-6 flex gap-3">
+                <button type="button" onClick={() => setShowEditModal(false)} className="flex-1 rounded-lg border border-zinc-600 py-2 text-zinc-300">Cancel</button>
+                <button type="submit" className="flex-1 rounded-lg bg-[#00ffc8]/20 py-2 text-[#00ffc8] hover:bg-[#00ffc8]/30">Save</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

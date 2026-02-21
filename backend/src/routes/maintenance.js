@@ -8,13 +8,14 @@ const {
   deleteMaintenance,
 } = require('../controllers/maintenanceController');
 const { protect, authorizeRoles } = require('../middleware/auth');
+const { requireCommunity } = require('../middleware/community');
 const validate = require('../middleware/validate');
 const { ROLES } = require('../config/roles');
 
 const router = express.Router();
-const viewRoles = [ROLES.Manager, ROLES.Dispatcher, ROLES.SafetyOfficer, ROLES.FinancialAnalyst];
+const viewRoles = [ROLES.Manager, ROLES.FinancialAnalyst];
 
-router.use(protect);
+router.use(protect, requireCommunity);
 
 router.get('/', authorizeRoles(...viewRoles), getMaintenances);
 router.get('/:id', authorizeRoles(...viewRoles), param('id').isMongoId(), validate, getMaintenance);

@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const tripSchema = new mongoose.Schema({
+  communityId: { type: mongoose.Schema.Types.ObjectId, ref: 'Community', required: true },
   vehicleId: { type: mongoose.Schema.Types.ObjectId, ref: 'Vehicle', required: true },
   driverId: { type: mongoose.Schema.Types.ObjectId, ref: 'Driver', required: true },
   cargoWeight: { type: Number, required: true, min: 0 },

@@ -79,7 +79,7 @@ export default function DashboardPage() {
       setStats(s as DashboardStats);
       setCharts(c as ChartData | null);
       const d = s as DashboardStats;
-      if (d?.highRiskVehicles != null && d.highRiskVehicles > 2) {
+      if (d?.scope !== 'limited' && d?.highRiskVehicles != null && d.highRiskVehicles > 2) {
         setAnomaly(`${d.highRiskVehicles} high-risk vehicles need attention.`);
       }
     } catch {
@@ -107,6 +107,9 @@ export default function DashboardPage() {
   return (
     <div className="p-8">
       <div className="mb-8">
+        {user?.communityName && (
+          <p className="text-sm text-zinc-500">{user.communityName}</p>
+        )}
         <h1 className="text-3xl font-bold neon-text">Command Center</h1>
         <p className="mt-1 text-zinc-400">Real-time fleet overview</p>
       </div>
@@ -127,7 +130,7 @@ export default function DashboardPage() {
           <>
             <KpiCard title="Active Fleet" value={stats?.activeFleetCount ?? '–'} icon={Truck} delay={0} />
             {stats?.scope === 'full' && (
-              <KpiCard title="In Maintenance" value={stats?.vehiclesInMaintenance ?? '–'} icon={Wrench} delay={0.05} />
+              <KpiCard title="Maintenance Alerts" value={stats?.vehiclesInMaintenance ?? '–'} icon={Wrench} delay={0.05} />
             )}
             {stats?.scope === 'full' && (
               <KpiCard title="Utilization %" value={`${stats?.utilizationPercent ?? 0}%`} icon={TrendingUp} delay={0.1} />
@@ -137,22 +140,35 @@ export default function DashboardPage() {
               <KpiCard title="High Risk Vehicles" value={stats?.highRiskVehicles ?? '–'} icon={AlertTriangle} delay={0.2} />
             )}
             {(stats?.scope === 'full' || stats?.scope === 'financial') && (
-              <KpiCard title="Monthly Profit" value={`$${Number(stats?.monthlyProfit ?? 0).toFixed(0)}`} icon={DollarSign} delay={0.25} />
+              <KpiCard title="Financial Overview (Monthly Profit)" value={`$${Number(stats?.monthlyProfit ?? 0).toFixed(0)}`} icon={DollarSign} delay={0.25} />
             )}
             {stats?.scope === 'limited' && (
-              <>
-                <KpiCard title="Available Vehicles" value={stats?.availableVehiclesCount ?? '–'} icon={Truck} delay={0.2} />
-                <KpiCard title="Available Drivers" value={stats?.availableDriversCount ?? '–'} icon={Package} delay={0.25} />
-              </>
+              <KpiCard title="Available Vehicles" value={stats?.availableVehiclesCount ?? '–'} icon={Truck} delay={0.2} />
             )}
             {stats?.scope === 'financial' && (
-              <KpiCard title="Operational Cost" value={`$${Number(stats?.totalOperationalCost ?? 0).toFixed(0)}`} icon={DollarSign} delay={0.1} />
+              <>
+                <KpiCard title="Total Operational Cost" value={`$${Number(stats?.totalOperationalCost ?? 0).toFixed(0)}`} icon={DollarSign} delay={0.1} />
+                <KpiCard title="Fuel Expenses" value={`$${Number(stats?.fuelExpenses ?? 0).toFixed(0)}`} icon={DollarSign} delay={0.15} />
+                <KpiCard title="Maintenance Costs" value={`$${Number(stats?.maintenanceCosts ?? 0).toFixed(0)}`} icon={DollarSign} delay={0.2} />
+                {stats?.vehicleROI?.length ? (
+                  <div className="glass neon-border rounded-xl p-5">
+                    <p className="text-sm text-zinc-400">Vehicle ROI (%)</p>
+                    <ul className="mt-2 space-y-1 max-h-32 overflow-y-auto">
+                      {stats.vehicleROI.slice(0, 8).map((v, i) => (
+                        <li key={i} className="text-sm text-white">{v.name}: {v.roi.toFixed(1)}%</li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : null}
+              </>
             )}
           </>
         )}
         {stats?.scope === 'compliance' && (
           <>
-            <KpiCard title="Suspended Drivers" value={stats?.suspendedDriversCount ?? '–'} icon={AlertTriangle} delay={0} />
+            <KpiCard title="Expired Licenses" value={stats?.expiredLicensesCount ?? '–'} icon={AlertTriangle} delay={0} />
+            <KpiCard title="Suspended Drivers" value={stats?.suspendedDriversCount ?? '–'} icon={AlertTriangle} delay={0.05} />
+            <KpiCard title="Low Safety Score Alerts" value={stats?.lowSafetyScoreCount ?? '–'} icon={AlertTriangle} delay={0.1} />
             {(stats?.complianceAlerts?.length ?? 0) > 0 && (
               <div className="glass neon-border col-span-full rounded-xl p-4">
                 <p className="text-sm font-medium text-amber-400">Compliance alerts</p>
@@ -167,6 +183,7 @@ export default function DashboardPage() {
         )}
       </div>
 
+      {stats?.scope !== 'limited' && stats?.scope !== 'compliance' && (
       <div className="mt-8 grid gap-6 lg:grid-cols-2">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -267,6 +284,7 @@ export default function DashboardPage() {
           </a>
         </motion.div>
       </div>
+      )}
 
       {showAiPopup && (
         <motion.div

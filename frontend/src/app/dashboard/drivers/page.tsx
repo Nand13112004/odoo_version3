@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { drivers as driversApi, type Driver } from '@/lib/api';
+import { drivers as driversApi, trips as tripsApi, type Driver, type Trip } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
-import { can, Permissions } from '@/lib/permissions';
+import { can, Permissions, ROLES } from '@/lib/permissions';
 import { AlertCircle } from 'lucide-react';
 
 const statusColors: Record<string, string> = {
@@ -18,30 +18,64 @@ const STATUS_OPTIONS = ['On Duty', 'Off Duty', 'Suspended', 'On Trip'] as const;
 export default function DriversPage() {
   const { user } = useAuth();
   const [list, setList] = useState<Driver[]>([]);
+  const [tripRates, setTripRates] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState({ name: '', licenseNumber: '', licenseExpiry: '', safetyScore: 90, status: 'On Duty' });
+  const isSafetyOfficer = user?.role === ROLES.SafetyOfficer;
+  const [form, setForm] = useState({ name: '', licenseNumber: '', licenseExpiry: '', safetyScore: 90, status: 'On Duty', category: 'Truck' as 'Truck' | 'Van' | 'Bike' });
   const [submitting, setSubmitting] = useState(false);
 
   const canView = can(user?.role, Permissions.DRIVERS.view);
   const canAdd = can(user?.role, Permissions.DRIVERS.add);
+  const canEdit = can(user?.role, Permissions.DRIVERS.edit);
   const canUpdateStatus = can(user?.role, Permissions.DRIVERS.updateStatus);
+  const canDelete = can(user?.role, Permissions.DRIVERS.delete);
 
-  const load = () => {
-    driversApi.list().then((r) => { if (r.success && r.data) setList(Array.isArray(r.data) ? r.data : []); }).finally(() => setLoading(false));
+  const load = async () => {
+    const [driversRes, tripsRes] = await Promise.all([
+      driversApi.list(),
+      isSafetyOfficer ? tripsApi.list() : Promise.resolve({ success: true, data: [] as Trip[] }),
+    ]);
+    if (driversRes.success && driversRes.data) setList(Array.isArray(driversRes.data) ? driversRes.data : []);
+    if (isSafetyOfficer && tripsRes.success && tripsRes.data) {
+      const trips = Array.isArray(tripsRes.data) ? tripsRes.data : [];
+      const byDriver: Record<string, { total: number; completed: number }> = {};
+      trips.forEach((t) => {
+        const id = typeof t.driverId === 'object' && t.driverId?._id ? t.driverId._id : (t.driverId as string);
+        if (!byDriver[id]) byDriver[id] = { total: 0, completed: 0 };
+        byDriver[id].total += 1;
+        if (t.status === 'Completed') byDriver[id].completed += 1;
+      });
+      const rates: Record<string, number> = {};
+      Object.entries(byDriver).forEach(([id, v]) => {
+        rates[id] = v.total > 0 ? Math.round((v.completed / v.total) * 100) : 0;
+      });
+      setTripRates(rates);
+    }
+    setLoading(false);
   };
 
   useEffect(() => {
     load();
-  }, []);
+  }, [isSafetyOfficer]);
 
   const handleStatusChange = async (driverId: string, status: string) => {
     if (!canUpdateStatus) return;
     try {
-      await driversApi.update(driverId, { status });
+      await driversApi.updateStatus(driverId, status);
       load();
     } catch {
       alert('Failed to update status');
+    }
+  };
+
+  const handleDelete = async (driverId: string, name: string) => {
+    if (!canDelete || !confirm(`Delete driver "${name}"? This cannot be undone.`)) return;
+    try {
+      await driversApi.delete(driverId);
+      load();
+    } catch {
+      alert('Failed to delete driver');
     }
   };
 
@@ -56,8 +90,9 @@ export default function DriversPage() {
         licenseExpiry: form.licenseExpiry,
         safetyScore: form.safetyScore,
         status: form.status,
+        category: form.category,
       });
-      setForm({ name: '', licenseNumber: '', licenseExpiry: '', safetyScore: 90, status: 'On Duty' });
+      setForm({ name: '', licenseNumber: '', licenseExpiry: '', safetyScore: 90, status: 'On Duty', category: 'Truck' });
       setShowForm(false);
       load();
     } catch (err) {
@@ -90,10 +125,10 @@ export default function DriversPage() {
     <div className="p-8">
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold neon-text">Driver Management</h1>
-          <p className="mt-1 text-zinc-400">Licenses, compliance, and status</p>
+          <h1 className="text-3xl font-bold neon-text">{isSafetyOfficer ? 'Driver Safety Profiles' : 'Driver Management'}</h1>
+          <p className="mt-1 text-zinc-400">{isSafetyOfficer ? 'Safety score, trip completion rate, status' : 'Licenses, compliance, and status'}</p>
         </div>
-        {canAdd && (
+        {canAdd && !isSafetyOfficer && (
           <button
             onClick={() => setShowForm(!showForm)}
             className="rounded-lg bg-[#00ffc8]/20 px-4 py-2 text-sm text-[#00ffc8]"
@@ -136,6 +171,18 @@ export default function DriversPage() {
               className="rounded-lg border border-zinc-600 bg-zinc-800/50 px-3 py-2 text-white"
               placeholder="Safety Score"
             />
+            <div>
+              <label className="block text-xs text-zinc-500">Category</label>
+              <select
+                value={form.category}
+                onChange={(e) => setForm({ ...form, category: e.target.value as 'Truck' | 'Van' | 'Bike' })}
+                className="mt-1 w-full rounded-lg border border-zinc-600 bg-zinc-800/50 px-3 py-2 text-white"
+              >
+                <option value="Truck">Truck</option>
+                <option value="Van">Van</option>
+                <option value="Bike">Bike</option>
+              </select>
+            </div>
           </div>
           <button type="submit" disabled={submitting} className="rounded-lg bg-[#00ffc8]/20 px-4 py-2 text-sm text-[#00ffc8]">
             {submitting ? 'Adding...' : 'Add Driver'}
@@ -149,9 +196,13 @@ export default function DriversPage() {
             <tr className="border-b border-zinc-700/50 bg-zinc-900/30">
               <th className="px-4 py-3 text-left text-sm font-medium text-zinc-400">Name</th>
               <th className="px-4 py-3 text-left text-sm font-medium text-zinc-400">License</th>
+              {!isSafetyOfficer && <th className="px-4 py-3 text-left text-sm font-medium text-zinc-400">Category</th>}
               <th className="px-4 py-3 text-left text-sm font-medium text-zinc-400">Expiry</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-zinc-400">Safety</th>
+              <th className="px-4 py-3 text-left text-sm font-medium text-zinc-400">Safety Score</th>
+              {isSafetyOfficer && <th className="px-4 py-3 text-left text-sm font-medium text-zinc-400">Trip completion %</th>}
+              {isSafetyOfficer && <th className="px-4 py-3 text-left text-sm font-medium text-zinc-400">Incident history</th>}
               <th className="px-4 py-3 text-left text-sm font-medium text-zinc-400">Status</th>
+              {canDelete && <th className="px-4 py-3 text-left text-sm font-medium text-zinc-400">Actions</th>}
             </tr>
           </thead>
           <tbody>
@@ -161,13 +212,18 @@ export default function DriversPage() {
                 <tr key={d._id} className="border-b border-zinc-800/50 hover:bg-zinc-800/30">
                   <td className="px-4 py-3 font-medium text-white">{d.name}</td>
                   <td className="px-4 py-3 text-zinc-300">{d.licenseNumber}</td>
+                  {!isSafetyOfficer && <td className="px-4 py-3 text-zinc-300">{d.category ?? 'Truck'}</td>}
                   <td className="px-4 py-3">
                     <span className={expired ? 'text-red-400' : 'text-zinc-300'}>
                       {d.licenseExpiry ? new Date(d.licenseExpiry).toLocaleDateString() : '-'}
                       {expired && <AlertCircle className="ml-1 inline h-4 w-4 text-red-400" />}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-zinc-300">{d.safetyScore ?? '-'}</td>
+                  <td className="px-4 py-3">
+                    <span className={(d.safetyScore ?? 100) < 70 ? 'text-amber-400' : 'text-zinc-300'}>{d.safetyScore ?? '-'}</span>
+                  </td>
+                  {isSafetyOfficer && <td className="px-4 py-3 text-zinc-300">{tripRates[d._id] != null ? `${tripRates[d._id]}%` : '–'}</td>}
+                  {isSafetyOfficer && <td className="px-4 py-3 text-zinc-500">None</td>}
                   <td className="px-4 py-3">
                     {canUpdateStatus ? (
                       <select
@@ -185,6 +241,16 @@ export default function DriversPage() {
                       </span>
                     )}
                   </td>
+                  {canDelete && (
+                    <td className="px-4 py-3">
+                      <button
+                        onClick={() => handleDelete(d._id, d.name)}
+                        className="text-sm text-red-400 hover:text-red-300"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  )}
                 </tr>
               );
             })}

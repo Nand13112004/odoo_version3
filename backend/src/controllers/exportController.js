@@ -4,7 +4,7 @@ const PDFDocument = require('pdfkit');
 
 exports.exportVehiclesCsv = async (req, res, next) => {
   try {
-    const vehicles = await Vehicle.find().lean();
+    const vehicles = await Vehicle.find({ communityId: req.user.communityId }).lean();
     const headers = 'Name,License Plate,Capacity,Odometer,Status,Risk Score,Total Revenue,Total Maintenance,Total Fuel,ROI\n';
     const rows = vehicles.map(
       v =>
@@ -21,7 +21,7 @@ exports.exportVehiclesCsv = async (req, res, next) => {
 
 exports.exportTripsCsv = async (req, res, next) => {
   try {
-    const trips = await Trip.find().populate('vehicleId', 'name licensePlate').populate('driverId', 'name').lean();
+    const trips = await Trip.find({ communityId: req.user.communityId }).populate('vehicleId', 'name licensePlate').populate('driverId', 'name').lean();
     const headers = 'Vehicle,Driver,Cargo Weight,Distance,Revenue,Status,Start,End\n';
     const rows = trips.map(
       t =>
@@ -38,7 +38,10 @@ exports.exportTripsCsv = async (req, res, next) => {
 
 exports.exportReportPdf = async (req, res, next) => {
   try {
-    const [vehicles, trips] = await Promise.all([Vehicle.find().lean(), Trip.find({ status: 'Completed' }).lean()]);
+    const [vehicles, trips] = await Promise.all([
+      Vehicle.find({ communityId: req.user.communityId }).lean(),
+      Trip.find({ communityId: req.user.communityId, status: 'Completed' }).lean(),
+    ]);
     const totalRevenue = trips.reduce((s, t) => s + (t.revenue || 0), 0);
     const doc = new PDFDocument({ margin: 50 });
     res.setHeader('Content-Type', 'application/pdf');

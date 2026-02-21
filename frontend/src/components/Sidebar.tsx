@@ -16,8 +16,33 @@ import {
   LogOut,
   FileDown,
   Fuel,
+  ShieldCheck,
+  DollarSign,
+  Users,
 } from 'lucide-react';
-import { Permissions, can } from '@/lib/permissions';
+import { Permissions, can, ROLES, MANAGER_NAV, DISPATCHER_NAV, SAFETY_OFFICER_NAV } from '@/lib/permissions';
+
+const COMMUNITY_NAV = [
+  { href: '/dashboard/community', label: 'Community Dashboard' },
+  { href: '/dashboard/community/settings', label: 'Community Settings' },
+  { href: '/dashboard/community/invite', label: 'Invite Members' },
+  { href: '/dashboard/community/members', label: 'View Members' },
+];
+
+const iconByPath: Record<string, React.ComponentType<{ className?: string }>> = {
+  '/dashboard': LayoutDashboard,
+  '/dashboard/vehicles': Truck,
+  '/dashboard/maintenance': Wrench,
+  '/dashboard/drivers': User,
+  '/dashboard/compliance': ShieldCheck,
+  '/dashboard/analytics': BarChart3,
+  '/dashboard/expenses': DollarSign,
+  '/dashboard/trips': MapPin,
+  '/dashboard/trips/active': MapPin,
+  '/dashboard/trips/completed': CheckSquare,
+  '/dashboard/fuel-logging': Fuel,
+  '/dashboard/safety/compliance': ShieldCheck,
+};
 
 const nav = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, allowed: Permissions.NAV.dashboard },
@@ -35,17 +60,51 @@ const nav = [
 export function Sidebar() {
   const pathname = usePathname();
   const { user, logout } = useAuth();
+  const isManager = user?.role === ROLES.Manager;
+  const isDispatcher = user?.role === ROLES.Dispatcher;
+  const isSafetyOfficer = user?.role === ROLES.SafetyOfficer;
+  const isFinancialAnalyst = user?.role === ROLES.FinancialAnalyst;
+
+  const navItems = isManager
+    ? [
+        ...MANAGER_NAV.map((item) => ({
+          href: item.href,
+          label: item.label,
+          icon: iconByPath[item.href] ?? LayoutDashboard,
+        })),
+        ...COMMUNITY_NAV.map((item) => ({
+          href: item.href,
+          label: item.label,
+          icon: iconByPath[item.href] ?? Users,
+        })),
+      ]
+    : isDispatcher
+      ? DISPATCHER_NAV.map((item) => ({
+          href: item.href,
+          label: item.label,
+          icon: iconByPath[item.href] ?? LayoutDashboard,
+        }))
+      : isSafetyOfficer
+        ? SAFETY_OFFICER_NAV.map((item) => ({
+            href: item.href,
+            label: item.label,
+            icon: iconByPath[item.href] ?? LayoutDashboard,
+          }))
+        : nav
+            .filter((item) => can(user?.role, item.allowed))
+            .map((item) => ({ href: item.href, label: item.label, icon: item.icon }));
 
   return (
     <aside className="glass fixed left-0 top-0 z-40 flex h-screen w-56 flex-col border-r border-[#00ffc8]/10">
-      <div className="flex h-14 items-center gap-2 border-b border-[#00ffc8]/10 px-4">
+      <div className="flex h-14 flex-col justify-center gap-0 border-b border-[#00ffc8]/10 px-4">
         <span className="font-semibold neon-text">FleetFlow AI</span>
+        {user?.communityName && (
+          <span className="truncate text-xs text-zinc-500">{user.communityName}</span>
+        )}
       </div>
       <nav className="flex-1 space-y-0.5 overflow-y-auto p-2">
-        {nav.map((item) => {
+        {navItems.map((item) => {
           const Icon = item.icon;
-          // respect frontend visibility via role
-          if (!can(user?.role, item.allowed)) return null;
           const active = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href));
           return (
             <Link
@@ -62,7 +121,7 @@ export function Sidebar() {
             </Link>
           );
         })}
-        {can(user?.role, Permissions.NAV.export) && (
+        {!isManager && !isDispatcher && !isSafetyOfficer && (isFinancialAnalyst || can(user?.role, Permissions.NAV.export)) && (
           <Link
             href="/dashboard/export"
             className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-zinc-400 hover:bg-zinc-800/50 hover:text-zinc-200"

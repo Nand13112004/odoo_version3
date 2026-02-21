@@ -5,8 +5,9 @@ const { recalculateVehicleROI } = require('../services/roiService');
 
 exports.getMaintenances = async (req, res, next) => {
   try {
+    const communityId = req.user.communityId;
     const { vehicleId } = req.query;
-    const filter = vehicleId ? { vehicleId } : {};
+    const filter = { communityId, ...(vehicleId ? { vehicleId } : {}) };
     const maintenances = await Maintenance.find(filter).populate('vehicleId', 'name licensePlate').sort({ date: -1 });
     res.json({ success: true, data: maintenances });
   } catch (err) {
@@ -16,7 +17,7 @@ exports.getMaintenances = async (req, res, next) => {
 
 exports.getMaintenance = async (req, res, next) => {
   try {
-    const maintenance = await Maintenance.findById(req.params.id).populate('vehicleId');
+    const maintenance = await Maintenance.findOne({ _id: req.params.id, communityId: req.user.communityId }).populate('vehicleId');
     if (!maintenance) return res.status(404).json({ success: false, message: 'Maintenance not found' });
     res.json({ success: true, data: maintenance });
   } catch (err) {
@@ -48,7 +49,7 @@ exports.createMaintenance = async (req, res, next) => {
 
 exports.updateMaintenance = async (req, res, next) => {
   try {
-    const maintenance = await Maintenance.findById(req.params.id);
+    const maintenance = await Maintenance.findOne({ _id: req.params.id, communityId: req.user.communityId });
     if (!maintenance) return res.status(404).json({ success: false, message: 'Maintenance not found' });
     const oldCost = maintenance.cost;
     Object.assign(maintenance, req.body);
@@ -71,7 +72,7 @@ exports.updateMaintenance = async (req, res, next) => {
 
 exports.deleteMaintenance = async (req, res, next) => {
   try {
-    const maintenance = await Maintenance.findById(req.params.id);
+    const maintenance = await Maintenance.findOne({ _id: req.params.id, communityId: req.user.communityId });
     if (!maintenance) return res.status(404).json({ success: false, message: 'Maintenance not found' });
     const vehicle = await Vehicle.findById(maintenance.vehicleId);
     if (vehicle) {

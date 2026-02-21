@@ -7,6 +7,8 @@ const connectDB = require('./config/db');
 const errorHandler = require('./middleware/errorHandler');
 
 const authRoutes = require('./routes/auth');
+const communityRoutes = require('./routes/community');
+const inviteRoutes = require('./routes/invites');
 const vehicleRoutes = require('./routes/vehicles');
 const driverRoutes = require('./routes/drivers');
 const tripRoutes = require('./routes/trips');
@@ -29,6 +31,8 @@ app.use(cors({ origin: corsOrigin.split(',').map(s => s.trim()) }));
 app.use(express.json());
 
 app.use('/api/auth', authRoutes);
+app.use('/api/community', communityRoutes);
+app.use('/api/invites', inviteRoutes);
 app.use('/api/vehicles', vehicleRoutes);
 app.use('/api/drivers', driverRoutes);
 app.use('/api/trips', tripRoutes);

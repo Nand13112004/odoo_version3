@@ -1,5 +1,6 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
+const Community = require('../src/models/Community');
 const User = require('../src/models/User');
 const Vehicle = require('../src/models/Vehicle');
 const Driver = require('../src/models/Driver');
@@ -10,13 +11,7 @@ const { updateVehicleRiskScore } = require('../src/services/riskService');
 
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/fleetflow-ai';
 
-const users = [
-  { name: 'Admin Fleet', email: 'manager@fleetflow.ai', password: 'password123', role: 'Manager' },
-  { name: 'Dispatch User', email: 'dispatcher@fleetflow.ai', password: 'password123', role: 'Dispatcher' },
-  { name: 'Safety User', email: 'safety@fleetflow.ai', password: 'password123', role: 'SafetyOfficer' },
-  { name: 'Finance User', email: 'finance@fleetflow.ai', password: 'password123', role: 'FinancialAnalyst' },
-];
-
+const communityName = 'FleetFlow Demo';
 const vehicles = [
   { name: 'Truck Alpha', licensePlate: 'FL-001', capacity: 5000, odometer: 45000, acquisitionCost: 85000, fuelEfficiency: 8, status: 'Available' },
   { name: 'Truck Beta', licensePlate: 'FL-002', capacity: 7500, odometer: 120000, acquisitionCost: 92000, fuelEfficiency: 6.5, status: 'Available' },
@@ -34,6 +29,7 @@ const drivers = [
 
 async function seed() {
   await mongoose.connect(MONGODB_URI);
+  await Community.deleteMany({});
   await User.deleteMany({});
   await Vehicle.deleteMany({});
   await Driver.deleteMany({});
@@ -41,24 +37,44 @@ async function seed() {
   await Maintenance.deleteMany({});
   await FuelLog.deleteMany({});
 
-  const createdUsers = await User.insertMany(users);
-  const createdVehicles = await Vehicle.insertMany(vehicles);
-  const createdDrivers = await Driver.insertMany(drivers);
+  const community = await Community.create({ name: communityName, createdBy: null });
+  const manager = await User.create({
+    name: 'Admin Fleet',
+    email: 'manager@fleetflow.ai',
+    password: 'password123',
+    role: 'Manager',
+    communityId: community._id,
+    isCommunityAdmin: true,
+  });
+  community.createdBy = manager._id;
+  await community.save();
+
+  await User.insertMany([
+    { name: 'Dispatch User', email: 'dispatcher@fleetflow.ai', password: 'password123', role: 'Dispatcher', communityId: community._id, isCommunityAdmin: false },
+    { name: 'Safety User', email: 'safety@fleetflow.ai', password: 'password123', role: 'SafetyOfficer', communityId: community._id, isCommunityAdmin: false },
+    { name: 'Finance User', email: 'finance@fleetflow.ai', password: 'password123', role: 'FinancialAnalyst', communityId: community._id, isCommunityAdmin: false },
+  ]);
+
+  const vehiclesWithCommunity = vehicles.map((v) => ({ ...v, communityId: community._id }));
+  const driversWithCommunity = drivers.map((d) => ({ ...d, communityId: community._id }));
+
+  const createdVehicles = await Vehicle.insertMany(vehiclesWithCommunity);
+  const createdDrivers = await Driver.insertMany(driversWithCommunity);
 
   await Trip.insertMany([
-    { vehicleId: createdVehicles[0]._id, driverId: createdDrivers[0]._id, cargoWeight: 3000, distance: 450, revenue: 1200, status: 'Completed', fuelUsed: 56, cost: 280, startTime: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), endTime: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000 + 8 * 60 * 60 * 1000) },
-    { vehicleId: createdVehicles[2]._id, driverId: createdDrivers[1]._id, cargoWeight: 1200, distance: 180, revenue: 580, status: 'Dispatched', startTime: new Date() },
-    { vehicleId: createdVehicles[1]._id, driverId: createdDrivers[3]._id, cargoWeight: 5000, distance: 320, revenue: 0, status: 'Draft' },
+    { communityId: community._id, vehicleId: createdVehicles[0]._id, driverId: createdDrivers[0]._id, cargoWeight: 3000, distance: 450, revenue: 1200, status: 'Completed', fuelUsed: 56, cost: 280, startTime: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), endTime: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000 + 8 * 60 * 60 * 1000) },
+    { communityId: community._id, vehicleId: createdVehicles[2]._id, driverId: createdDrivers[1]._id, cargoWeight: 1200, distance: 180, revenue: 580, status: 'Dispatched', startTime: new Date() },
+    { communityId: community._id, vehicleId: createdVehicles[1]._id, driverId: createdDrivers[3]._id, cargoWeight: 5000, distance: 320, revenue: 0, status: 'Draft' },
   ]);
 
   await Maintenance.insertMany([
-    { vehicleId: createdVehicles[3]._id, description: 'Brake pads replacement', cost: 450, severity: 'High', date: new Date() },
-    { vehicleId: createdVehicles[1]._id, description: 'Oil change', cost: 120, severity: 'Low', date: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) },
+    { communityId: community._id, vehicleId: createdVehicles[3]._id, description: 'Brake pads replacement', cost: 450, severity: 'High', date: new Date() },
+    { communityId: community._id, vehicleId: createdVehicles[1]._id, description: 'Oil change', cost: 120, severity: 'Low', date: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) },
   ]);
 
   await FuelLog.insertMany([
-    { vehicleId: createdVehicles[0]._id, liters: 80, cost: 400, date: new Date() },
-    { vehicleId: createdVehicles[2]._id, liters: 35, cost: 175, date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000) },
+    { communityId: community._id, vehicleId: createdVehicles[0]._id, liters: 80, cost: 400, date: new Date() },
+    { communityId: community._id, vehicleId: createdVehicles[2]._id, liters: 35, cost: 175, date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000) },
   ]);
 
   for (const v of createdVehicles) {
@@ -70,7 +86,8 @@ async function seed() {
     await updateVehicleRiskScore(v._id);
   }
 
-  console.log('Seed complete. Users:', createdUsers.length, 'Vehicles:', createdVehicles.length, 'Drivers:', createdDrivers.length);
+  const allUsers = await User.countDocuments({ communityId: community._id });
+  console.log('Seed complete. Community:', communityName, '| Users:', allUsers, '| Vehicles:', createdVehicles.length, '| Drivers:', createdDrivers.length);
   console.log('Login: manager@fleetflow.ai / password123');
   await mongoose.disconnect();
   process.exit(0);

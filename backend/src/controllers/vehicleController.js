@@ -4,7 +4,8 @@ const { recalculateVehicleROI } = require('../services/roiService');
 
 exports.getVehicles = async (req, res, next) => {
   try {
-    const vehicles = await Vehicle.find().sort({ createdAt: -1 });
+    const communityId = req.user.communityId;
+    const vehicles = await Vehicle.find({ communityId }).sort({ createdAt: -1 });
     res.json({ success: true, data: vehicles });
   } catch (err) {
     next(err);
@@ -13,7 +14,7 @@ exports.getVehicles = async (req, res, next) => {
 
 exports.getVehicle = async (req, res, next) => {
   try {
-    const vehicle = await Vehicle.findById(req.params.id);
+    const vehicle = await Vehicle.findOne({ _id: req.params.id, communityId: req.user.communityId });
     if (!vehicle) return res.status(404).json({ success: false, message: 'Vehicle not found' });
     res.json({ success: true, data: vehicle });
   } catch (err) {
@@ -23,7 +24,7 @@ exports.getVehicle = async (req, res, next) => {
 
 exports.createVehicle = async (req, res, next) => {
   try {
-    const vehicle = await Vehicle.create(req.body);
+    const vehicle = await Vehicle.create({ ...req.body, communityId: req.user.communityId });
     await updateVehicleRiskScore(vehicle._id);
     const updated = await Vehicle.findById(vehicle._id);
     const io = req.app.get('io');
@@ -36,10 +37,11 @@ exports.createVehicle = async (req, res, next) => {
 
 exports.updateVehicle = async (req, res, next) => {
   try {
-    const vehicle = await Vehicle.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
+    const vehicle = await Vehicle.findOneAndUpdate(
+      { _id: req.params.id, communityId: req.user.communityId },
+      req.body,
+      { new: true, runValidators: true }
+    );
     if (!vehicle) return res.status(404).json({ success: false, message: 'Vehicle not found' });
     await updateVehicleRiskScore(vehicle._id);
     const updated = await Vehicle.findById(vehicle._id);
@@ -53,7 +55,7 @@ exports.updateVehicle = async (req, res, next) => {
 
 exports.deleteVehicle = async (req, res, next) => {
   try {
-    const vehicle = await Vehicle.findByIdAndDelete(req.params.id);
+    const vehicle = await Vehicle.findOneAndDelete({ _id: req.params.id, communityId: req.user.communityId });
     if (!vehicle) return res.status(404).json({ success: false, message: 'Vehicle not found' });
     res.json({ success: true, data: {} });
   } catch (err) {
@@ -63,7 +65,7 @@ exports.deleteVehicle = async (req, res, next) => {
 
 exports.getVehicleROI = async (req, res, next) => {
   try {
-    const vehicle = await Vehicle.findById(req.params.id);
+    const vehicle = await Vehicle.findOne({ _id: req.params.id, communityId: req.user.communityId });
     if (!vehicle) return res.status(404).json({ success: false, message: 'Vehicle not found' });
     await recalculateVehicleROI(vehicle._id);
     const updated = await Vehicle.findById(req.params.id);

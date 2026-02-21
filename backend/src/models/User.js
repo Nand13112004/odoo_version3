@@ -11,6 +11,8 @@ const userSchema = new mongoose.Schema({
     required: true,
     enum: ROLE_LIST,
   },
+  communityId: { type: mongoose.Schema.Types.ObjectId, ref: 'Community', default: null },
+  isCommunityAdmin: { type: Boolean, default: false },
 }, { timestamps: true });
 
 userSchema.pre('save', async function (next) {

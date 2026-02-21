@@ -1,13 +1,15 @@
 const Trip = require('../models/Trip');
 const Vehicle = require('../models/Vehicle');
 const Driver = require('../models/Driver');
+const { ROLES } = require('../config/roles');
 const { recalculateVehicleROI } = require('../services/roiService');
 const { updateVehicleRiskScore } = require('../services/riskService');
 
 exports.getTrips = async (req, res, next) => {
   try {
+    const communityId = req.user.communityId;
     const { status } = req.query;
-    const filter = status ? { status } : {};
+    const filter = { communityId, ...(status ? { status } : {}) };
     const trips = await Trip.find(filter)
       .populate('vehicleId', 'name licensePlate status')
       .populate('driverId', 'name status licenseExpiry')
@@ -20,7 +22,7 @@ exports.getTrips = async (req, res, next) => {
 
 exports.getTrip = async (req, res, next) => {
   try {
-    const trip = await Trip.findById(req.params.id)
+    const trip = await Trip.findOne({ _id: req.params.id, communityId: req.user.communityId })
       .populate('vehicleId')
       .populate('driverId');
     if (!trip) return res.status(404).json({ success: false, message: 'Trip not found' });
@@ -30,25 +32,30 @@ exports.getTrip = async (req, res, next) => {
   }
 };
 
-const canCreateTrip = async (vehicleId, driverId, cargoWeight) => {
-  const vehicle = await Vehicle.findById(vehicleId);
-  const driver = await Driver.findById(driverId);
+const canCreateTrip = async (vehicleId, driverId, cargoWeight, userRole, communityId) => {
+  const vehicle = await Vehicle.findOne({ _id: vehicleId, communityId });
+  const driver = await Driver.findOne({ _id: driverId, communityId });
   if (!vehicle) return { ok: false, message: 'Vehicle not found' };
   if (!driver) return { ok: false, message: 'Driver not found' };
   if (cargoWeight > vehicle.capacity) return { ok: false, message: 'Cargo exceeds vehicle capacity' };
   if (vehicle.status !== 'Available') return { ok: false, message: 'Vehicle is not available' };
   if (new Date(driver.licenseExpiry) < new Date()) return { ok: false, message: 'Driver license expired' };
-  if (driver.status !== 'On Duty' && driver.status !== 'Off Duty') return { ok: false, message: 'Driver is not available for duty' };
+  if (userRole === ROLES.Dispatcher) {
+    if (driver.status !== 'On Duty') return { ok: false, message: 'Only On Duty drivers can be assigned' };
+  } else if (driver.status !== 'On Duty' && driver.status !== 'Off Duty') {
+    return { ok: false, message: 'Driver is not available for duty' };
+  }
   return { ok: true };
 };
 
 exports.createTrip = async (req, res, next) => {
   try {
     const { vehicleId, driverId, cargoWeight, distance, revenue, locationUrl } = req.body;
-    const check = await canCreateTrip(vehicleId, driverId, cargoWeight);
+    const check = await canCreateTrip(vehicleId, driverId, cargoWeight, req.user?.role, req.user.communityId);
     if (!check.ok) return res.status(400).json({ success: false, message: check.message });
 
     const trip = await Trip.create({
+      communityId: req.user.communityId,
       vehicleId,
       driverId,
       cargoWeight,
@@ -68,11 +75,11 @@ exports.createTrip = async (req, res, next) => {
 
 exports.dispatchTrip = async (req, res, next) => {
   try {
-    const trip = await Trip.findById(req.params.id).populate('vehicleId').populate('driverId');
+    const trip = await Trip.findOne({ _id: req.params.id, communityId: req.user.communityId }).populate('vehicleId').populate('driverId');
     if (!trip) return res.status(404).json({ success: false, message: 'Trip not found' });
     if (trip.status !== 'Draft') return res.status(400).json({ success: false, message: 'Trip must be in Draft to dispatch' });
 
-    const check = await canCreateTrip(trip.vehicleId._id, trip.driverId._id, trip.cargoWeight);
+    const check = await canCreateTrip(trip.vehicleId._id, trip.driverId._id, trip.cargoWeight, req.user?.role, req.user.communityId);
     if (!check.ok) return res.status(400).json({ success: false, message: check.message });
 
     await Vehicle.findByIdAndUpdate(trip.vehicleId._id, { status: 'On Trip' });
@@ -92,13 +99,15 @@ exports.dispatchTrip = async (req, res, next) => {
 
 exports.completeTrip = async (req, res, next) => {
   try {
-    const { fuelUsed, cost } = req.body;
-    const trip = await Trip.findById(req.params.id).populate('vehicleId').populate('driverId');
+    const { fuelUsed, cost, endOdometer } = req.body;
+    const trip = await Trip.findOne({ _id: req.params.id, communityId: req.user.communityId }).populate('vehicleId').populate('driverId');
     if (!trip) return res.status(404).json({ success: false, message: 'Trip not found' });
     if (trip.status !== 'Dispatched') return res.status(400).json({ success: false, message: 'Trip must be Dispatched to complete' });
 
     const vehicle = trip.vehicleId;
-    const newOdometer = (vehicle.odometer || 0) + trip.distance;
+    const newOdometer = (endOdometer != null && Number(endOdometer) >= 0)
+      ? Number(endOdometer)
+      : (vehicle.odometer || 0) + trip.distance;
     const newFuelUsed = (vehicle.totalFuelCost ? 0 : 0) + (fuelUsed || 0);
     let newFuelEfficiency = vehicle.fuelEfficiency;
     if (fuelUsed > 0) newFuelEfficiency = trip.distance / fuelUsed;
@@ -132,7 +141,7 @@ exports.completeTrip = async (req, res, next) => {
 
 exports.cancelTrip = async (req, res, next) => {
   try {
-    const trip = await Trip.findById(req.params.id).populate('vehicleId').populate('driverId');
+    const trip = await Trip.findOne({ _id: req.params.id, communityId: req.user.communityId }).populate('vehicleId').populate('driverId');
     if (!trip) return res.status(404).json({ success: false, message: 'Trip not found' });
     if (trip.status === 'Dispatched') {
       await Vehicle.findByIdAndUpdate(trip.vehicleId._id, { status: 'Available' });
@@ -150,7 +159,7 @@ exports.cancelTrip = async (req, res, next) => {
 
 exports.updateTrip = async (req, res, next) => {
   try {
-    const trip = await Trip.findById(req.params.id);
+    const trip = await Trip.findOne({ _id: req.params.id, communityId: req.user.communityId });
     if (!trip) return res.status(404).json({ success: false, message: 'Trip not found' });
     if (trip.status !== 'Draft') return res.status(400).json({ success: false, message: 'Only draft trips can be updated' });
     const { cargoWeight, distance, revenue } = req.body;

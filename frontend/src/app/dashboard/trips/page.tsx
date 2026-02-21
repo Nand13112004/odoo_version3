@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { trips as tripsApi, vehicles as vehiclesApi, drivers as driversApi, type Trip, type Vehicle, type Driver } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
-import { Permissions, can } from '@/lib/permissions';
+import { Permissions, can, ROLES } from '@/lib/permissions';
 import { MapPin, Send, X, Loader2 } from 'lucide-react';
 
 export default function TripDispatcherPage() {
@@ -16,7 +16,7 @@ export default function TripDispatcherPage() {
   const [form, setForm] = useState({ vehicleId: '', driverId: '', cargoWeight: '', distance: '', revenue: '', locationUrl: '' });
   const [error, setError] = useState('');
   const [completeModal, setCompleteModal] = useState<{ trip: Trip } | null>(null);
-  const [completeForm, setCompleteForm] = useState({ fuelUsed: '', cost: '' });
+  const [completeForm, setCompleteForm] = useState({ fuelUsed: '', cost: '', endOdometer: '' });
 
   const load = () => {
     Promise.all([
@@ -33,7 +33,8 @@ export default function TripDispatcherPage() {
   useEffect(() => { load(); }, []);
 
   const availableVehicles = vehicles.filter((v) => v.status === 'Available');
-  const availableDrivers = drivers.filter((d) => d.status === 'On Duty' || d.status === 'Off Duty')
+  const availableDrivers = drivers
+    .filter((d) => (user?.role === ROLES.Dispatcher ? d.status === 'On Duty' : (d.status === 'On Duty' || d.status === 'Off Duty')))
     .filter((d) => !d.licenseExpiry || new Date(d.licenseExpiry) >= new Date());
 
   const handleCreate = async (e: React.FormEvent) => {
@@ -78,9 +79,10 @@ export default function TripDispatcherPage() {
       await tripsApi.complete(completeModal.trip._id, {
         fuelUsed: Number(completeForm.fuelUsed) || 0,
         cost: Number(completeForm.cost) || 0,
+        endOdometer: completeForm.endOdometer ? Number(completeForm.endOdometer) : undefined,
       });
       setCompleteModal(null);
-      setCompleteForm({ fuelUsed: '', cost: '' });
+      setCompleteForm({ fuelUsed: '', cost: '', endOdometer: '' });
       load();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Complete failed');
@@ -213,6 +215,10 @@ export default function TripDispatcherPage() {
           <div className="glass neon-border w-full max-w-sm rounded-xl p-6">
             <h3 className="font-semibold text-white">Complete Trip</h3>
             <div className="mt-4 space-y-3">
+              <div>
+                <label className="block text-sm text-zinc-400">Final odometer (km)</label>
+                <input type="number" min={0} placeholder="Optional" value={completeForm.endOdometer} onChange={(e) => setCompleteForm((f) => ({ ...f, endOdometer: e.target.value }))} className="mt-1 w-full rounded-lg border border-zinc-600 bg-zinc-900/50 px-3 py-2 text-white placeholder-zinc-500" />
+              </div>
               <div>
                 <label className="block text-sm text-zinc-400">Fuel used (L)</label>
                 <input type="number" min={0} value={completeForm.fuelUsed} onChange={(e) => setCompleteForm((f) => ({ ...f, fuelUsed: e.target.value }))} className="mt-1 w-full rounded-lg border border-zinc-600 bg-zinc-900/50 px-3 py-2 text-white" />

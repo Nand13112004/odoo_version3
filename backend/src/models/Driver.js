@@ -1,10 +1,12 @@
 const mongoose = require('mongoose');
 
 const driverSchema = new mongoose.Schema({
+  communityId: { type: mongoose.Schema.Types.ObjectId, ref: 'Community', required: true },
   name: { type: String, required: true, trim: true },
   licenseNumber: { type: String, required: true, trim: true },
   licenseExpiry: { type: Date, required: true },
   safetyScore: { type: Number, default: 100, min: 0, max: 100 },
+  category: { type: String, enum: ['Truck', 'Van', 'Bike'], default: 'Truck' },
   status: {
     type: String,
     required: true,
