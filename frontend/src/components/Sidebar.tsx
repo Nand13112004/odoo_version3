@@ -95,11 +95,11 @@ export function Sidebar() {
             .map((item) => ({ href: item.href, label: item.label, icon: item.icon }));
 
   return (
-    <aside className="glass fixed left-0 top-0 z-40 flex h-screen w-56 flex-col border-r border-[#00ffc8]/10">
-      <div className="flex h-14 flex-col justify-center gap-0 border-b border-[#00ffc8]/10 px-4">
+    <aside className="glass fixed left-0 top-0 z-40 flex h-screen w-56 flex-col border-r border-teal-200">
+      <div className="flex h-14 flex-col justify-center gap-0 border-b border-teal-200 px-4">
         <span className="font-semibold neon-text">FleetFlow AI</span>
         {user?.communityName && (
-          <span className="truncate text-xs text-zinc-500">{user.communityName}</span>
+          <span className="truncate text-xs text-zinc-600">{user.communityName}</span>
         )}
       </div>
       <nav className="flex-1 space-y-0.5 overflow-y-auto p-2">
@@ -112,8 +112,8 @@ export function Sidebar() {
               href={item.href}
               className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition ${
                 active
-                  ? 'bg-[#00ffc8]/15 text-[#00ffc8]'
-                  : 'text-zinc-400 hover:bg-zinc-800/50 hover:text-zinc-200'
+                  ? 'bg-teal-100 text-teal-800'
+                  : 'text-zinc-600 hover:bg-slate-100 hover:text-zinc-900'
               }`}
             >
               <Icon className="h-5 w-5 shrink-0" />
@@ -124,19 +124,19 @@ export function Sidebar() {
         {!isManager && !isDispatcher && !isSafetyOfficer && (isFinancialAnalyst || can(user?.role, Permissions.NAV.export)) && (
           <Link
             href="/dashboard/export"
-            className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-zinc-400 hover:bg-zinc-800/50 hover:text-zinc-200"
+            className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-zinc-600 hover:bg-slate-100 hover:text-zinc-900"
           >
             <FileDown className="h-5 w-5" />
             Export
           </Link>
         )}
       </nav>
-      <div className="border-t border-[#00ffc8]/10 p-3">
-        <p className="truncate text-xs text-zinc-500">{user?.email}</p>
-        <p className="text-xs font-medium text-[#00ffc8]/80">{user?.role}</p>
+      <div className="border-t border-teal-200 p-3">
+        <p className="truncate text-xs text-zinc-600">{user?.email}</p>
+        <p className="text-xs font-medium text-teal-700">{user?.role}</p>
         <button
           onClick={logout}
-          className="mt-2 flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-zinc-400 hover:bg-red-500/10 hover:text-red-400"
+          className="mt-2 flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-zinc-600 hover:bg-red-50 hover:text-red-600"
         >
           <LogOut className="h-4 w-4" />
           Logout

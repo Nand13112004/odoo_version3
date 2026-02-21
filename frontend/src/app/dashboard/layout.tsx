@@ -66,15 +66,15 @@ export default function DashboardLayout({
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#0a0a0f]">
-        <div className="h-10 w-10 animate-spin rounded-full border-2 border-[#00ffc8] border-t-transparent" />
+      <div className="flex min-h-screen items-center justify-center bg-slate-50">
+        <div className="h-10 w-10 animate-spin rounded-full border-2 border-teal-500 border-t-transparent" />
       </div>
     );
   }
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f]">
+    <div className="min-h-screen bg-slate-50">
       <Sidebar />
       <main className="pl-56 min-h-screen">{children}</main>
     </div>

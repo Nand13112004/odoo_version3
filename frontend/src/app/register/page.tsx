@@ -59,47 +59,47 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#0a0a0f] px-4">
+    <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
       <div className="glass neon-border w-full max-w-md rounded-2xl p-8 shadow-xl">
         <h1 className="mb-2 text-2xl font-bold neon-text">Register</h1>
-        <p className="mb-6 text-sm text-zinc-400">Create an account</p>
+        <p className="mb-6 text-sm text-zinc-600">Create an account</p>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="mb-1 block text-sm text-zinc-400">Name</label>
-            <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="w-full rounded-lg border border-zinc-600 bg-zinc-900/50 px-4 py-2 text-white" required />
+            <label className="mb-1 block text-sm text-zinc-600">Name</label>
+            <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2 text-zinc-900" required />
           </div>
           <div>
-            <label className="mb-1 block text-sm text-zinc-400">Email</label>
-            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full rounded-lg border border-zinc-600 bg-zinc-900/50 px-4 py-2 text-white" required />
+            <label className="mb-1 block text-sm text-zinc-600">Email</label>
+            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2 text-zinc-900" required />
           </div>
           <div>
-            <label className="mb-1 block text-sm text-zinc-400">Password</label>
-            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full rounded-lg border border-zinc-600 bg-zinc-900/50 px-4 py-2 text-white" minLength={6} required />
+            <label className="mb-1 block text-sm text-zinc-600">Password</label>
+            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2 text-zinc-900" minLength={6} required />
           </div>
           {!inviteToken && (
             <div>
-              <label className="mb-1 block text-sm text-zinc-400">Community / Company Name</label>
+              <label className="mb-1 block text-sm text-zinc-600">Community / Company Name</label>
               <input
                 type="text"
                 value={communityName}
                 onChange={(e) => setCommunityName(e.target.value)}
-                className="w-full rounded-lg border border-zinc-600 bg-zinc-900/50 px-4 py-2 text-white"
+                className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2 text-zinc-900"
                 placeholder="Your company or team name"
                 required={!inviteToken}
               />
             </div>
           )}
           {inviteToken && inviteInfo && (
-            <p className="rounded-lg border border-[#00ffc8]/30 bg-[#00ffc8]/5 px-3 py-2 text-sm text-[#00ffc8]">
+            <p className="rounded-lg border border-teal-300 bg-teal-50 px-3 py-2 text-sm text-teal-800">
               Joining: {inviteInfo.communityName || 'Community'} as {inviteInfo.role}
             </p>
           )}
           {error && <p className="text-sm text-red-400">{error}</p>}
-          <button type="submit" disabled={loading} className="w-full rounded-lg bg-[#00ffc8]/20 py-2.5 font-medium text-[#00ffc8] hover:bg-[#00ffc8]/30 disabled:opacity-50">
+          <button type="submit" disabled={loading} className="w-full rounded-lg bg-teal-600 py-2.5 font-medium text-white hover:bg-teal-700 disabled:opacity-50">
             {loading ? 'Creating...' : 'Register'}
           </button>
         </form>
-        <Link href="/login" className="mt-4 block text-center text-sm text-[#00ffc8]/80 hover:underline">
+        <Link href="/login" className="mt-4 block text-center text-sm text-teal-600 hover:underline">
           Already have an account? Sign in
         </Link>
       </div>

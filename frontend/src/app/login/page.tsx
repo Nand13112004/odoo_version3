@@ -25,10 +25,10 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#0a0a0f] px-4">
+    <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
       <div className="glass neon-border w-full max-w-md rounded-2xl p-8 shadow-xl">
         <h1 className="mb-2 text-2xl font-bold neon-text">FleetFlow AI</h1>
-        <p className="mb-6 text-sm text-zinc-400">Sign in to your account</p>
+        <p className="mb-6 text-sm text-zinc-600">Sign in to your account</p>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="mb-1 block text-sm text-zinc-400">Email</label>
@@ -36,18 +36,18 @@ export default function LoginPage() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-lg border border-zinc-600 bg-zinc-900/50 px-4 py-2 text-white placeholder-zinc-500 focus:border-[#00ffc8]/50 focus:outline-none focus:ring-1 focus:ring-[#00ffc8]/50"
+              className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2 text-zinc-900 placeholder-zinc-400 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
               placeholder="you@company.com"
               required
             />
           </div>
           <div>
-            <label className="mb-1 block text-sm text-zinc-400">Password</label>
+            <label className="mb-1 block text-sm text-zinc-600">Password</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-lg border border-zinc-600 bg-zinc-900/50 px-4 py-2 text-white placeholder-zinc-500 focus:border-[#00ffc8]/50 focus:outline-none focus:ring-1 focus:ring-[#00ffc8]/50"
+              className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2 text-zinc-900 placeholder-zinc-400 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
               placeholder="••••••••"
               required
             />
@@ -56,7 +56,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-lg bg-[#00ffc8]/20 py-2.5 font-medium text-[#00ffc8] transition hover:bg-[#00ffc8]/30 disabled:opacity-50"
+            className="w-full rounded-lg bg-teal-600 py-2.5 font-medium text-white transition hover:bg-teal-700 disabled:opacity-50"
           >
             {loading ? 'Signing in...' : 'Sign in'}
           </button>
@@ -65,9 +65,9 @@ export default function LoginPage() {
           Demo: manager@fleetflow.ai / password123
         </p>
         <p className="mt-2 text-center text-sm text-zinc-500">
-          <Link href="/register" className="text-[#00ffc8]/80 hover:underline">Register</Link>
+          <Link href="/register" className="text-teal-600 hover:underline">Register</Link>
           {' · '}
-          <Link href="/" className="text-[#00ffc8]/80 hover:underline">← Back</Link>
+          <Link href="/" className="text-teal-600 hover:underline">← Back</Link>
         </p>
       </div>
     </div>

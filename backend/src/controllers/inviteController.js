@@ -35,7 +35,7 @@ exports.createInvite = async (req, res, next) => {
           email: invite.email,
           role: invite.role,
           expiresAt: invite.expiresAt,
-          inviteUrl: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/register?invite=${inviteToken}`,
+          inviteUrl: `${(process.env.FRONTEND_URL || 'http://localhost:3000').split(',')[0].trim()}/register?invite=${inviteToken}`,
         },
       },
     });

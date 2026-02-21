@@ -10,7 +10,6 @@ import {
   AlertTriangle,
   DollarSign,
   Sparkles,
-  Mic,
   X,
 } from 'lucide-react';
 import { dashboard as dashboardApi, type DashboardStats, type ChartData } from '@/lib/api';
@@ -31,7 +30,7 @@ import {
   Cell,
 } from 'recharts';
 
-const COLORS = ['#00ffc8', '#00cc9e', '#009973', '#00664d'];
+const COLORS = ['#0d9488', '#14b8a6', '#2dd4bf', '#5eead4'];
 
 function KpiCard({
   title,
@@ -53,10 +52,10 @@ function KpiCard({
     >
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm text-zinc-400">{title}</p>
-          <p className="mt-1 text-2xl font-bold text-white">{value}</p>
+          <p className="text-sm text-zinc-600">{title}</p>
+          <p className="mt-1 text-2xl font-bold text-zinc-900">{value}</p>
         </div>
-        <Icon className="h-10 w-10 text-[#00ffc8]/60" />
+        <Icon className="h-10 w-10 text-teal-500" />
       </div>
     </motion.div>
   );
@@ -66,7 +65,7 @@ export default function DashboardPage() {
   const { user } = useAuth();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [charts, setCharts] = useState<ChartData | null>(null);
-  const [aiSummary, setAiSummary] = useState<string | null>(null);
+  //const [aiSummary, setAiSummary] = useState<string | null>(null);
   const [showAiPopup, setShowAiPopup] = useState(true);
   const [anomaly, setAnomaly] = useState<string | null>(null);
   const canViewAnalytics = can(user?.role, Permissions.ACTIONS.viewAnalytics);
@@ -108,17 +107,17 @@ export default function DashboardPage() {
     <div className="p-8">
       <div className="mb-8">
         {user?.communityName && (
-          <p className="text-sm text-zinc-500">{user.communityName}</p>
+          <p className="text-sm text-zinc-600">{user.communityName}</p>
         )}
         <h1 className="text-3xl font-bold neon-text">Command Center</h1>
-        <p className="mt-1 text-zinc-400">Real-time fleet overview</p>
+        <p className="mt-1 text-zinc-600">Real-time fleet overview</p>
       </div>
 
       {anomaly && (
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="mb-6 flex items-center gap-3 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-amber-200"
+          className="mb-6 flex items-center gap-3 rounded-lg border border-amber-300 bg-amber-50 px-4 py-3 text-amber-800"
         >
           <AlertTriangle className="h-5 w-5 shrink-0" />
           <span>Smart anomaly: {anomaly}</span>
@@ -152,10 +151,10 @@ export default function DashboardPage() {
                 <KpiCard title="Maintenance Costs" value={`$${Number(stats?.maintenanceCosts ?? 0).toFixed(0)}`} icon={DollarSign} delay={0.2} />
                 {stats?.vehicleROI?.length ? (
                   <div className="glass neon-border rounded-xl p-5">
-                    <p className="text-sm text-zinc-400">Vehicle ROI (%)</p>
-                    <ul className="mt-2 space-y-1 max-h-32 overflow-y-auto">
-                      {stats.vehicleROI.slice(0, 8).map((v, i) => (
-                        <li key={i} className="text-sm text-white">{v.name}: {v.roi.toFixed(1)}%</li>
+                  <p className="text-sm text-zinc-600">Vehicle ROI (%)</p>
+                  <ul className="mt-2 max-h-32 space-y-1 overflow-y-auto">
+                    {stats.vehicleROI.slice(0, 8).map((v, i) => (
+                      <li key={i} className="text-sm text-zinc-900">{v.name}: {v.roi.toFixed(1)}%</li>
                       ))}
                     </ul>
                   </div>
@@ -171,8 +170,8 @@ export default function DashboardPage() {
             <KpiCard title="Low Safety Score Alerts" value={stats?.lowSafetyScoreCount ?? '–'} icon={AlertTriangle} delay={0.1} />
             {(stats?.complianceAlerts?.length ?? 0) > 0 && (
               <div className="glass neon-border col-span-full rounded-xl p-4">
-                <p className="text-sm font-medium text-amber-400">Compliance alerts</p>
-                <ul className="mt-2 list-inside list-disc text-sm text-zinc-300">
+                <p className="text-sm font-medium text-amber-700">Compliance alerts</p>
+                <ul className="mt-2 list-inside list-disc text-sm text-zinc-700">
                   {stats.complianceAlerts!.map((a, i) => (
                     <li key={i}>{a}</li>
                   ))}
@@ -191,15 +190,15 @@ export default function DashboardPage() {
           transition={{ delay: 0.3 }}
           className="glass neon-border rounded-xl p-5"
         >
-          <h2 className="mb-4 text-lg font-semibold text-white">Revenue vs Expense</h2>
+          <h2 className="mb-4 text-lg font-semibold text-zinc-900">Revenue vs Expense</h2>
           <div className="h-64">
             {charts?.revenueVsExpense?.length ? (
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={charts.revenueVsExpense}>
                   <XAxis dataKey="name" stroke="#71717a" fontSize={12} />
                   <YAxis stroke="#71717a" fontSize={12} />
-                  <Tooltip contentStyle={{ background: '#18181b', border: '1px solid #00ffc8/20' }} />
-                  <Bar dataKey="revenue" fill="#00ffc8" name="Revenue" radius={4} />
+                  <Tooltip contentStyle={{ background: '#ffffff', border: '1px solid #e2e8f0' }} />
+                  <Bar dataKey="revenue" fill="#0d9488" name="Revenue" radius={4} />
                   <Bar dataKey="expense" fill="#f59e0b" name="Expense" radius={4} />
                 </BarChart>
               </ResponsiveContainer>
@@ -215,15 +214,15 @@ export default function DashboardPage() {
           transition={{ delay: 0.35 }}
           className="glass neon-border rounded-xl p-5"
         >
-          <h2 className="mb-4 text-lg font-semibold text-white">Fuel Cost Trend</h2>
+          <h2 className="mb-4 text-lg font-semibold text-zinc-900">Fuel Cost Trend</h2>
           <div className="h-64">
             {charts?.fuelTrend?.length ? (
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={charts.fuelTrend}>
                   <XAxis dataKey="month" stroke="#71717a" fontSize={12} />
                   <YAxis stroke="#71717a" fontSize={12} />
-                  <Tooltip contentStyle={{ background: '#18181b' }} />
-                  <Line type="monotone" dataKey="cost" stroke="#00ffc8" strokeWidth={2} dot={{ fill: '#00ffc8' }} />
+                  <Tooltip contentStyle={{ background: '#ffffff', border: '1px solid #e2e8f0' }} />
+                  <Line type="monotone" dataKey="cost" stroke="#0d9488" strokeWidth={2} dot={{ fill: '#0d9488' }} />
                 </LineChart>
               </ResponsiveContainer>
             ) : (
@@ -238,7 +237,7 @@ export default function DashboardPage() {
           transition={{ delay: 0.4 }}
           className="glass neon-border rounded-xl p-5"
         >
-          <h2 className="mb-4 text-lg font-semibold text-white">Fleet Utilization</h2>
+          <h2 className="mb-4 text-lg font-semibold text-zinc-900">Fleet Utilization</h2>
           <div className="h-64">
             {charts?.fleetUtilization?.length ? (
               <ResponsiveContainer width="100%" height="100%">
@@ -256,7 +255,7 @@ export default function DashboardPage() {
                       <Cell key={i} fill={COLORS[i % COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip contentStyle={{ background: '#18181b' }} />
+                  <Tooltip contentStyle={{ background: '#ffffff', border: '1px solid #e2e8f0' }} />
                 </PieChart>
               </ResponsiveContainer>
             ) : (
@@ -271,13 +270,13 @@ export default function DashboardPage() {
           transition={{ delay: 0.45 }}
           className="glass neon-border rounded-xl p-5"
         >
-          <h2 className="mb-4 text-lg font-semibold text-white">AI Insight Panel</h2>
-          <p className="text-sm text-zinc-400">
+          <h2 className="mb-4 text-lg font-semibold text-zinc-900">AI Insight Panel</h2>
+          <p className="text-sm text-zinc-600">
             Risk scores and ROI are updated in real time. Use the AI Assistant for natural language queries and financial advice.
           </p>
           <a
             href="/dashboard/ai-chat"
-            className="mt-4 inline-flex items-center gap-2 rounded-lg bg-[#00ffc8]/20 px-4 py-2 text-sm font-medium text-[#00ffc8] hover:bg-[#00ffc8]/30"
+            className="mt-4 inline-flex items-center gap-2 rounded-lg bg-teal-100 px-4 py-2 text-sm font-medium text-teal-800 hover:bg-teal-200"
           >
             <Sparkles className="h-4 w-4" />
             Open AI Assistant
@@ -292,27 +291,27 @@ export default function DashboardPage() {
           animate={{ opacity: 1, scale: 1 }}
           className="fixed bottom-6 right-6 z-50 flex max-w-sm gap-3 rounded-xl glass neon-border p-4 shadow-xl"
         >
-          <Sparkles className="h-5 w-5 shrink-0 text-[#00ffc8]" />
+          <Sparkles className="h-5 w-5 shrink-0 text-teal-600" />
           <div>
-            <p className="font-medium text-white">AI Daily Summary</p>
-            <p className="mt-1 text-sm text-zinc-400">
+            <p className="font-medium text-zinc-900">AI Daily Summary</p>
+            <p className="mt-1 text-sm text-zinc-600">
               Your fleet metrics are live. {stats?.highRiskVehicles ? `${stats.highRiskVehicles} vehicle(s) have elevated risk.` : 'All vehicles within normal range.'}
             </p>
           </div>
-          <button onClick={() => setShowAiPopup(false)} className="shrink-0 text-zinc-400 hover:text-white">
+          <button onClick={() => setShowAiPopup(false)} className="shrink-0 text-zinc-500 hover:text-zinc-900">
             <X className="h-5 w-5" />
           </button>
         </motion.div>
       )}
 
       <div className="fixed bottom-6 left-64 z-40">
-        <button
-          className="flex items-center gap-2 rounded-full bg-[#00ffc8]/20 px-4 py-2 text-sm font-medium text-[#00ffc8] neon-border"
+        {/* <button
+          className="flex items-center gap-2 rounded-full border border-teal-300 bg-teal-50 px-4 py-2 text-sm font-medium text-teal-800"
           title="Voice command (UI simulation)"
         >
           <Mic className="h-4 w-4" />
           Voice
-        </button>
+        </button> */}
       </div>
     </div>
   );
