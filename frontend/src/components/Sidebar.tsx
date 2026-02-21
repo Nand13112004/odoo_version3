@@ -60,13 +60,15 @@ export function Sidebar() {
             </Link>
           );
         })}
-        <Link
-          href="/dashboard/export"
-          className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-zinc-400 hover:bg-zinc-800/50 hover:text-zinc-200"
-        >
-          <FileDown className="h-5 w-5" />
-          Export
-        </Link>
+        {can(user?.role, Permissions.NAV.export) && (
+          <Link
+            href="/dashboard/export"
+            className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-zinc-400 hover:bg-zinc-800/50 hover:text-zinc-200"
+          >
+            <FileDown className="h-5 w-5" />
+            Export
+          </Link>
+        )}
       </nav>
       <div className="border-t border-[#00ffc8]/10 p-3">
         <p className="truncate text-xs text-zinc-500">{user?.email}</p>

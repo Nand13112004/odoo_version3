@@ -78,8 +78,9 @@ export default function DashboardPage() {
       const [s, c] = await Promise.all([statsPromise, chartsPromise]);
       setStats(s as DashboardStats);
       setCharts(c as ChartData | null);
-      if (s && (s as DashboardStats).highRiskVehicles > 2) {
-        setAnomaly(`${(s as DashboardStats).highRiskVehicles} high-risk vehicles need attention.`);
+      const d = s as Record<string, unknown> & { scope?: string; highRiskVehicles?: number };
+      if (d?.highRiskVehicles != null && d.highRiskVehicles > 2) {
+        setAnomaly(`${d.highRiskVehicles} high-risk vehicles need attention.`);
       }
     } catch {
       setStats(null);
@@ -122,12 +123,38 @@ export default function DashboardPage() {
       )}
 
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        <KpiCard title="Active Fleet" value={stats?.activeFleetCount ?? '–'} icon={Truck} delay={0} />
-        <KpiCard title="In Maintenance" value={stats?.vehiclesInMaintenance ?? '–'} icon={Wrench} delay={0.05} />
-        <KpiCard title="Utilization %" value={`${stats?.utilizationPercent ?? 0}%`} icon={TrendingUp} delay={0.1} />
-        <KpiCard title="Pending Cargo (kg)" value={stats?.pendingCargo ?? '–'} icon={Package} delay={0.15} />
-        <KpiCard title="High Risk Vehicles" value={stats?.highRiskVehicles ?? '–'} icon={AlertTriangle} delay={0.2} />
-        <KpiCard title="Monthly Profit" value={`$${stats?.monthlyProfit?.toFixed(0) ?? '0'}`} icon={DollarSign} delay={0.25} />
+        {(stats as Record<string, unknown>)?.scope !== 'compliance' && (
+          <>
+            <KpiCard title="Active Fleet" value={(stats as Record<string, unknown>)?.activeFleetCount ?? '–'} icon={Truck} delay={0} />
+            {(stats as Record<string, unknown>)?.scope === 'full' && (
+              <KpiCard title="In Maintenance" value={(stats as Record<string, unknown>)?.vehiclesInMaintenance ?? '–'} icon={Wrench} delay={0.05} />
+            )}
+            {(stats as Record<string, unknown>)?.scope === 'full' && (
+              <KpiCard title="Utilization %" value={`${(stats as Record<string, unknown>)?.utilizationPercent ?? 0}%`} icon={TrendingUp} delay={0.1} />
+            )}
+            <KpiCard title="Pending Cargo (kg)" value={(stats as Record<string, unknown>)?.pendingCargo ?? '–'} icon={Package} delay={0.15} />
+            {(stats as Record<string, unknown>)?.scope === 'full' && (
+              <KpiCard title="High Risk Vehicles" value={(stats as Record<string, unknown>)?.highRiskVehicles ?? '–'} icon={AlertTriangle} delay={0.2} />
+            )}
+            {((stats as Record<string, unknown>)?.scope === 'full' || (stats as Record<string, unknown>)?.scope === 'financial') && (
+              <KpiCard title="Monthly Profit" value={`$${Number((stats as Record<string, unknown>)?.monthlyProfit ?? 0).toFixed(0)}`} icon={DollarSign} delay={0.25} />
+            )}
+            {(stats as Record<string, unknown>)?.scope === 'limited' && (
+              <>
+                <KpiCard title="Available Vehicles" value={(stats as Record<string, unknown>)?.availableVehiclesCount ?? '–'} icon={Truck} delay={0.2} />
+                <KpiCard title="Available Drivers" value={(stats as Record<string, unknown>)?.availableDriversCount ?? '–'} icon={Package} delay={0.25} />
+              </>
+            )}
+            {(stats as Record<string, unknown>)?.scope === 'compliance' && (
+              <>
+                <KpiCard title="Suspended Drivers" value={(stats as Record<string, unknown>)?.suspendedDriversCount ?? '–'} icon={AlertTriangle} delay={0} />
+              </>
+            )}
+            {(stats as Record<string, unknown>)?.scope === 'financial' && (
+              <KpiCard title="Operational Cost" value={`$${Number((stats as Record<string, unknown>)?.totalOperationalCost ?? 0).toFixed(0)}`} icon={DollarSign} delay={0.1} />
+            )}
+          </>
+        )}
       </div>
 
       <div className="mt-8 grid gap-6 lg:grid-cols-2">
@@ -241,7 +268,7 @@ export default function DashboardPage() {
           <div>
             <p className="font-medium text-white">AI Daily Summary</p>
             <p className="mt-1 text-sm text-zinc-400">
-              Your fleet metrics are live. {stats?.highRiskVehicles ? `${stats.highRiskVehicles} vehicle(s) have elevated risk.` : 'All vehicles within normal range.'}
+              Your fleet metrics are live. {(stats as Record<string, unknown>)?.highRiskVehicles ? `${(stats as Record<string, unknown>).highRiskVehicles} vehicle(s) have elevated risk.` : 'All vehicles within normal range.'}
             </p>
           </div>
           <button onClick={() => setShowAiPopup(false)} className="shrink-0 text-zinc-400 hover:text-white">

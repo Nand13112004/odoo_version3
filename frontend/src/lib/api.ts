@@ -44,6 +44,8 @@ export const drivers = {
   get: (id: string) => api<Driver>(`/drivers/${id}`),
   create: (data: Partial<Driver>) => api<Driver>('/drivers', { method: 'POST', body: JSON.stringify(data) }),
   update: (id: string, data: Partial<Driver>) => api<Driver>(`/drivers/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  updateStatus: (id: string, status: string) =>
+    api<Driver>(`/drivers/${id}/status`, { method: 'PATCH', body: JSON.stringify({ status }) }),
   delete: (id: string) => api(`/drivers/${id}`, { method: 'DELETE' }),
 };
 

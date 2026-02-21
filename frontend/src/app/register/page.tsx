@@ -6,7 +6,7 @@ import { auth } from '@/lib/api';
 import type { User } from '@/lib/api';
 import Link from 'next/link';
 
-const ROLES = ['Fleet Manager', 'Dispatcher', 'Safety Officer', 'Financial Analyst'];
+const ROLES = ['Manager', 'Dispatcher', 'SafetyOfficer', 'FinancialAnalyst'];
 
 export default function RegisterPage() {
   const { setUser } = useAuth();
