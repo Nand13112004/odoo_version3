@@ -1,129 +1,262 @@
-# FleetFlow AI – Autonomous Fleet Intelligence Platform
+# 🚛 FleetFlow AI  
+### Autonomous Fleet Intelligence & Logistics Management Platform
 
-Full-stack AI-powered Fleet & Logistics Management System with real-time updates, predictive risk, and Gemini API integration.
+FleetFlow AI is a full-stack, AI-enhanced fleet and logistics management system designed to provide real-time operational control, predictive risk assessment, and financial performance analytics.
 
-## Features
+The platform combines modern full-stack engineering with intelligent decision support powered by Google Gemini API.
 
-- **Auth**: JWT, RBAC (Fleet Manager, Dispatcher, Safety Officer, Financial Analyst)
-- **Fleet**: Vehicle registry, capacity, odometer, status, risk score, ROI
-- **Drivers**: License expiry, safety score, On Duty / Off Duty / On Trip
-- **Trips**: Create, dispatch, complete with business rules (capacity, availability, license)
-- **Maintenance**: Records with severity; vehicle status → In Shop
-- **ROI**: `(Revenue - (Maintenance + Fuel)) / AcquisitionCost` per vehicle
-- **Predictive risk**: Simulated model (odometer, last maintenance, fuel efficiency) → riskScore 0–100
-- **Gemini API**: Vehicle risk analysis, financial advice, natural language queries
-- **Real-time**: Socket.io events: `vehicleStatusUpdated`, `tripCreated`, `maintenanceAdded`, `riskAlert`
-- **Export**: CSV (vehicles, trips), PDF report
-- **UI**: Dark theme, neon accent, glassmorphism, Recharts, Framer Motion, Mapbox (optional)
+---
 
-## Tech Stack
+## 🎯 Project Objective
 
-- **Frontend**: Next.js 14 (App Router), TypeScript, Tailwind, Recharts, Framer Motion, Socket.io client, Mapbox
-- **Backend**: Node.js, Express, MongoDB (Mongoose), JWT, RBAC, Socket.io, Gemini API
+FleetFlow AI was built to simulate a real-world fleet operations control system capable of:
 
-## Quick Start
+- Managing vehicles, drivers, and trips
+- Enforcing operational business rules
+- Predicting vehicle risk
+- Monitoring ROI performance
+- Delivering AI-powered insights
+- Broadcasting real-time updates
 
-### Prerequisites
+The architecture follows a modular, event-driven design with secure role-based access control.
 
-- Node.js 18+
-- MongoDB (local or [MongoDB Atlas](https://www.mongodb.com/cloud/atlas))
-- (Optional) [Gemini API key](https://makersuite.google.com/app/apikey)
-- (Optional) [Mapbox token](https://www.mapbox.com/) for Live Map
+---
+
+## 🏗️ System Architecture
+
+The system consists of two primary layers:
+
+### 1️⃣ Frontend (Next.js 14 – App Router)
+
+Responsibilities:
+- Dashboard & KPI visualization
+- Fleet registry interface
+- Driver management UI
+- Trip lifecycle tracking
+- Real-time updates via WebSockets
+- AI interaction panel
+- Financial charts & analytics
+
+---
+
+### 2️⃣ Backend (Node.js + Express)
+
+Responsibilities:
+- REST API management
+- Business rule enforcement
+- JWT authentication
+- Role-Based Access Control (RBAC)
+- Risk scoring engine
+- ROI computation engine
+- WebSocket event broadcasting
+- Gemini API integration
+- CSV & PDF export generation
+
+---
+
+### 3️⃣ Database Layer (MongoDB + Mongoose)
+
+Handles:
+- Vehicle records
+- Driver records
+- Trip history
+- Maintenance logs
+- Risk metrics
+- Financial analytics
+
+Connection pooling is managed through Mongoose.
+
+---
+
+## 🔄 System Data Flow
+
+User → Next.js Frontend  
+⬇  
+Express Backend (API Gateway + Business Logic)  
+⬇  
+MongoDB (Data Persistence)  
+⬇  
+Gemini API (AI Insights)  
+⬆  
+Socket.io (Real-Time Updates)
+
+---
+
+## ✨ Core Features
+
+### 🔐 Secure Authentication & RBAC
+
+- JWT-based authentication
+- Role-based access:
+  - Fleet Manager
+  - Dispatcher
+  - Safety Officer
+  - Financial Analyst
+- Protected endpoints & middleware validation
+
+---
+
+### 🚛 Fleet Management
+
+- Vehicle registration & capacity tracking
+- Odometer tracking
+- Operational status management
+- Risk scoring (0–100 scale)
+- ROI calculation per vehicle
+
+ROI Formula: (Revenue - (Maintenance + Fuel)) / AcquisitionCost
+
+
+---
+
+### 👨‍✈️ Driver Management
+
+- License expiry validation
+- Safety score tracking
+- On Duty / Off Duty / On Trip status control
+- Trip eligibility enforcement
+
+---
+
+### 🧾 Trip Lifecycle Engine
+
+Business logic enforced:
+
+- Cargo must not exceed vehicle capacity
+- Vehicle must be available
+- Driver must have valid license
+- Driver must be On Duty
+
+State transitions:
+- Dispatch → Vehicle & Driver → On Trip
+- Complete → Odometer update + ROI recalculation
+- Cancel → Status restored
+
+---
+
+### 🔧 Maintenance Management
+
+- Maintenance severity tracking
+- Automatic vehicle status update → In Shop
+- Risk score recalibration
+
+---
+
+### 📊 Predictive Risk Engine
+
+A simulated predictive model calculates risk based on:
+
+- Odometer reading
+- Maintenance frequency
+- Fuel efficiency
+- Vehicle operational patterns
+
+Outputs riskScore (0–100) used for alerts.
+
+---
+
+### 🤖 Gemini AI Integration
+
+FleetFlow AI integrates Gemini API to provide:
+
+- Vehicle risk explanation
+- Financial optimization advice
+- Natural language fleet queries
+- Strategic operational insights
+
+---
+
+### ⚡ Real-Time Event System
+
+Socket.io broadcasts:
+
+- `vehicleStatusUpdated`
+- `tripCreated`
+- `maintenanceAdded`
+- `riskAlert`
+
+Ensures dashboard remains synchronized without manual refresh.
+
+---
+
+### 📤 Data Export
+
+- CSV export (Vehicles, Trips)
+- Fleet performance PDF report
+
+---
+
+## 🛠️ Technology Stack
+
+### Frontend
+- Next.js 14 (App Router)
+- TypeScript
+- Tailwind CSS
+- Recharts
+- Framer Motion
+- Socket.io Client
+- Mapbox (optional)
 
 ### Backend
+- Node.js
+- Express.js
+- MongoDB
+- Mongoose
+- JWT Authentication
+- RBAC Middleware
+- Socket.io
+- Gemini API
+
+---
+
+## 🚀 Installation & Setup
+
+### 🔧 Prerequisites
+
+- Node.js 18+
+- MongoDB (Local or Atlas)
+- Gemini API key (optional)
+- Mapbox token (optional)
+
+---
+
+### 🖥 Backend Setup
 
 ```bash
 cd backend
 cp .env.example .env
-# Edit .env: set MONGODB_URI, JWT_SECRET, GEMINI_API_KEY
+# Configure:
+# MONGODB_URI
+# JWT_SECRET
+# GEMINI_API_KEY (optional)
 npm install
-npm run seed   # demo users + vehicles + drivers + trips
-npm run dev    # http://localhost:5000
-```
+npm run seed
+npm run dev
 
-### Frontend
+Backend runs at:
+http://localhost:5000
 
-```bash
+### Frontend Setup
+
 cd frontend
 cp .env.local.example .env.local
-# Set NEXT_PUBLIC_API_URL=http://localhost:5000/api
-# Set NEXT_PUBLIC_WS_URL=http://localhost:5000
-# Optionally NEXT_PUBLIC_MAPBOX_TOKEN=...
+# Configure:
+# NEXT_PUBLIC_API_URL
+# NEXT_PUBLIC_WS_URL
 npm install
-npm run dev    # http://localhost:3000
-```
+npm run dev
 
-### Demo Login
+Frontend runs at:
+http://localhost:3000
 
-- **Email**: `manager@fleetflow.ai`
-- **Password**: `password123`
+Backend (.env)
+PORT=5000
+MONGODB_URI=mongodb://127.0.0.1:27017/fleetflow
+JWT_SECRET=your_secure_secret
+GEMINI_API_KEY=optional_key
+CORS_ORIGIN=http://localhost:3000
 
-## API Overview
-
-| Method | Path | Description |
-|--------|------|-------------|
-| POST | /api/auth/register | Register (name, email, password, role) |
-| POST | /api/auth/login | Login |
-| GET | /api/auth/me | Current user (Bearer) |
-| GET | /api/vehicles | List vehicles |
-| GET | /api/vehicles/:id | Get vehicle |
-| POST | /api/vehicles | Create (Fleet Manager) |
-| PUT | /api/vehicles/:id | Update (Fleet Manager) |
-| GET | /api/drivers | List drivers |
-| POST | /api/drivers | Create driver |
-| GET | /api/trips | List trips (optional ?status=) |
-| POST | /api/trips | Create trip |
-| POST | /api/trips/:id/dispatch | Dispatch trip |
-| POST | /api/trips/:id/complete | Complete (body: fuelUsed, cost) |
-| POST | /api/trips/:id/cancel | Cancel trip |
-| GET | /api/maintenance | List maintenance |
-| POST | /api/maintenance | Add maintenance |
-| GET | /api/dashboard/stats | KPIs |
-| GET | /api/dashboard/charts | Charts data |
-| GET | /api/gemini/vehicle/:id/risk | AI vehicle risk |
-| GET | /api/gemini/financial-advice | AI financial advice |
-| POST | /api/gemini/query | Natural language (body: query) |
-| GET | /api/export/vehicles/csv | Download vehicles CSV |
-| GET | /api/export/trips/csv | Download trips CSV |
-| GET | /api/export/report/pdf | Download fleet report PDF |
-
-All protected routes require header: `Authorization: Bearer <token>`.
-
-## Business Rules
-
-- **Trip creation** blocked if: cargo > vehicle capacity, vehicle not Available, driver license expired, driver not On Duty.
-- **Dispatch**: vehicle → On Trip, driver → On Trip.
-- **Complete**: vehicle → Available, driver → On Duty; odometer and fuel totals updated; ROI recalculated.
-- **Maintenance added**: vehicle → In Shop.
-
-## Docker
-
-```bash
-# From repo root
-export JWT_SECRET=your-secret
-export GEMINI_API_KEY=your-key   # optional
-docker-compose up --build
-```
-
-- Backend: http://localhost:5000
-- Frontend: http://localhost:3000
-- MongoDB: local container
-
-## Deployment
-
-- **Backend**: Render, Railway, or any Node host. Set `MONGODB_URI` (e.g. Atlas), `JWT_SECRET`, `GEMINI_API_KEY`, `CORS_ORIGIN` (frontend URL).
-- **Frontend**: Vercel. Set `NEXT_PUBLIC_API_URL` and `NEXT_PUBLIC_WS_URL` to your backend URL.
-- **MongoDB**: Use MongoDB Atlas and set `MONGODB_URI` in backend env.
-
-## Tests
-
-```bash
-cd backend
-npm test
-```
-
-Runs unit tests for risk service (and can be extended).
-
-## License
-
-MIT.
+Frontend (.env.local)
+NEXT_PUBLIC_API_URL=http://localhost:5000/api
+NEXT_PUBLIC_WS_URL=http://localhost:5000
+NEXT_PUBLIC_MAPBOX_TOKEN=optional
