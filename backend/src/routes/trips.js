@@ -8,6 +8,7 @@ const {
   dispatchTrip,
   completeTrip,
   cancelTrip,
+  getTripLocation,
 } = require('../controllers/tripController');
 const { protect, authorizeRoles } = require('../middleware/auth');
 const { requireCommunity } = require('../middleware/community');
@@ -53,5 +54,6 @@ router.post(
   completeTrip
 );
 router.post('/:id/cancel', authorizeRoles(ROLES.Dispatcher), param('id').isMongoId(), validate, cancelTrip);
+router.get('/:id/location', authorizeRoles(...viewRoles), param('id').isMongoId(), validate, getTripLocation);
 
 module.exports = router;

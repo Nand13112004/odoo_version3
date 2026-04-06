@@ -99,10 +99,19 @@ export const trips = {
   get: (id: string) => api<Trip>(`/trips/${id}`),
   create: (data: Partial<Trip>) => api<Trip>('/trips', { method: 'POST', body: JSON.stringify(data) }),
   update: (id: string, data: Partial<Trip>) => api<Trip>(`/trips/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
-  dispatch: (id: string) => api<Trip>(`/trips/${id}/dispatch`, { method: 'POST' }),
+  dispatch: (id: string) => api<{ data: Trip; shareLink?: string }>(`/trips/${id}/dispatch`, { method: 'POST' }),
   complete: (id: string, data: { fuelUsed?: number; cost?: number; endOdometer?: number }) =>
     api<Trip>(`/trips/${id}/complete`, { method: 'POST', body: JSON.stringify(data) }),
   cancel: (id: string) => api<Trip>(`/trips/${id}/cancel`, { method: 'POST' }),
+  getLocation: (id: string) => api<TripLocation>(`/trips/${id}/location`),
+};
+
+export const driverTrip = {
+  get: (token: string) => api<DriverTripDetails>(`/driver-trip/${token}`),
+  accept: (token: string) => api<{ driverResponse: string; trackingExpiry: string }>(`/driver-trip/${token}/accept`, { method: 'POST' }),
+  reject: (token: string) => api<{ driverResponse: string }>(`/driver-trip/${token}/reject`, { method: 'POST' }),
+  updateLocation: (token: string, payload: { lat: number; lng: number; accuracy?: number; speed?: number; heading?: number }) =>
+    api(`/driver-trip/${token}/location`, { method: 'POST', body: JSON.stringify(payload) }),
 };
 
 export const maintenance = {
@@ -198,6 +207,43 @@ export interface Trip {
   startTime?: string;
   endTime?: string;
   locationUrl?: string;
+  shareToken?: string;
+  shareTokenGeneratedAt?: string;
+  driverResponse?: 'Pending' | 'Accepted' | 'Rejected';
+  pickupLocation?: { address: string; lat?: number; lng?: number };
+  dropLocation?: { address: string; lat?: number; lng?: number };
+  dispatcherNotes?: string;
+  trackingExpiry?: string;
+  lastKnownLat?: number;
+  lastKnownLng?: number;
+  lastLocationAt?: string;
+}
+
+export interface TripLocation {
+  lastKnownLat: number | null;
+  lastKnownLng: number | null;
+  lastLocationAt: string | null;
+  driverResponse: 'Pending' | 'Accepted' | 'Rejected';
+  trackingExpiry: string | null;
+  status: string;
+  pickupLocation?: { address: string; lat?: number; lng?: number };
+  dropLocation?: { address: string; lat?: number; lng?: number };
+}
+
+export interface DriverTripDetails {
+  _id: string;
+  status: string;
+  driverResponse: 'Pending' | 'Accepted' | 'Rejected';
+  pickupLocation: { address: string; lat?: number; lng?: number };
+  dropLocation: { address: string; lat?: number; lng?: number };
+  dispatcherNotes: string;
+  distance: number;
+  cargoWeight: number;
+  startTime?: string;
+  trackingExpiry?: string;
+  vehicleId: { _id: string; name?: string; licensePlate?: string; category?: string };
+  driverId: { _id: string; name?: string; licenseNumber?: string };
+  createdAt: string;
 }
 
 export interface Maintenance {

@@ -1,9 +1,13 @@
+const crypto = require('crypto');
 const Trip = require('../models/Trip');
+const LocationUpdate = require('../models/LocationUpdate');
 const Vehicle = require('../models/Vehicle');
 const Driver = require('../models/Driver');
 const { ROLES } = require('../config/roles');
 const { recalculateVehicleROI } = require('../services/roiService');
 const { updateVehicleRiskScore } = require('../services/riskService');
+
+const generateToken = () => crypto.randomBytes(32).toString('hex');
 
 exports.getTrips = async (req, res, next) => {
   try {
@@ -50,7 +54,7 @@ const canCreateTrip = async (vehicleId, driverId, cargoWeight, userRole, communi
 
 exports.createTrip = async (req, res, next) => {
   try {
-    const { vehicleId, driverId, cargoWeight, distance, revenue, locationUrl } = req.body;
+    const { vehicleId, driverId, cargoWeight, distance, revenue, locationUrl, pickupLocation, dropLocation, dispatcherNotes } = req.body;
     const check = await canCreateTrip(vehicleId, driverId, cargoWeight, req.user?.role, req.user.communityId);
     if (!check.ok) return res.status(400).json({ success: false, message: check.message });
 
@@ -63,6 +67,9 @@ exports.createTrip = async (req, res, next) => {
       revenue: revenue || 0,
       status: 'Draft',
       locationUrl,
+      pickupLocation: pickupLocation || {},
+      dropLocation: dropLocation || {},
+      dispatcherNotes: dispatcherNotes || '',
     });
     const populated = await Trip.findById(trip._id).populate('vehicleId').populate('driverId');
     const io = req.app.get('io');
@@ -86,12 +93,21 @@ exports.dispatchTrip = async (req, res, next) => {
     await Driver.findByIdAndUpdate(trip.driverId._id, { status: 'On Trip' });
     trip.status = 'Dispatched';
     trip.startTime = new Date();
+    // Auto-generate unique share token on dispatch
+    if (!trip.shareToken) {
+      trip.shareToken = generateToken();
+      trip.shareTokenGeneratedAt = new Date();
+      trip.driverResponse = 'Pending';
+    }
     await trip.save();
+
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+    const shareLink = `${frontendUrl}/driver-trip/${trip.shareToken}`;
 
     const io = req.app.get('io');
     if (io) io.emit('vehicleStatusUpdated', { vehicleId: trip.vehicleId._id, status: 'On Trip' });
     const updated = await Trip.findById(trip._id).populate('vehicleId').populate('driverId');
-    res.json({ success: true, data: updated });
+    res.json({ success: true, data: updated, shareLink });
   } catch (err) {
     next(err);
   }
@@ -169,6 +185,33 @@ exports.updateTrip = async (req, res, next) => {
     await trip.save();
     const populated = await Trip.findById(trip._id).populate('vehicleId').populate('driverId');
     res.json({ success: true, data: populated });
+  } catch (err) {
+    next(err);
+  }
+};
+
+/**
+ * GET /api/trips/:id/location
+ * Dispatcher fetches latest driver location for the map view.
+ */
+exports.getTripLocation = async (req, res, next) => {
+  try {
+    const trip = await Trip.findOne({ _id: req.params.id, communityId: req.user.communityId })
+      .select('lastKnownLat lastKnownLng lastLocationAt driverResponse trackingExpiry status pickupLocation dropLocation shareToken');
+    if (!trip) return res.status(404).json({ success: false, message: 'Trip not found' });
+    res.json({
+      success: true,
+      data: {
+        lastKnownLat: trip.lastKnownLat,
+        lastKnownLng: trip.lastKnownLng,
+        lastLocationAt: trip.lastLocationAt,
+        driverResponse: trip.driverResponse,
+        trackingExpiry: trip.trackingExpiry,
+        status: trip.status,
+        pickupLocation: trip.pickupLocation,
+        dropLocation: trip.dropLocation,
+      },
+    });
   } catch (err) {
     next(err);
   }

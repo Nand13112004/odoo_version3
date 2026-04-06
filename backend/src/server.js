@@ -17,6 +17,7 @@ const fuelLogRoutes = require('./routes/fuelLogs');
 const dashboardRoutes = require('./routes/dashboard');
 const geminiRoutes = require('./routes/gemini');
 const exportRoutes = require('./routes/export');
+const driverTripRoutes = require('./routes/driverTrip');
 
 const app = express();
 const server = http.createServer(app);
@@ -41,6 +42,7 @@ app.use('/api/fuel-logs', fuelLogRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/gemini', geminiRoutes);
 app.use('/api/export', exportRoutes);
+app.use('/api/driver-trip', driverTripRoutes);
 
 app.get('/api/health', (req, res) => res.json({ ok: true }));
 
