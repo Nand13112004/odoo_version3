@@ -33,36 +33,36 @@ export default function ExportPage() {
   return (
     <div className="p-8">
       <h1 className="text-3xl font-bold neon-text">Export</h1>
-      <p className="mt-1 text-zinc-400">CSV and PDF reports</p>
+      <p className="mt-1 text-[#64748B]">CSV and PDF reports</p>
       <div className="mt-8 grid gap-4 sm:grid-cols-3">
         <button
           onClick={() => downloadUrl(exportApi.vehiclesCsv(), 'vehicles.csv')}
-          className="glass neon-border flex items-center gap-3 rounded-xl p-5 text-left transition hover:bg-[#00ffc8]/10"
+          className="bg-white border border-[#E2E8F0] shadow-card flex items-center gap-3 rounded-xl p-5 text-left transition hover:bg-[#2563EB]/10"
         >
-          <FileDown className="h-8 w-8 text-[#00ffc8]" />
+          <FileDown className="h-8 w-8 text-[#2563EB]" />
           <div>
-            <p className="font-medium text-white">Vehicles CSV</p>
-            <p className="text-sm text-zinc-400">Export vehicle list</p>
+            <p className="font-medium text-[#0F172A]">Vehicles CSV</p>
+            <p className="text-sm text-[#64748B]">Export vehicle list</p>
           </div>
         </button>
         <button
           onClick={() => downloadUrl(exportApi.tripsCsv(), 'trips.csv')}
-          className="glass neon-border flex items-center gap-3 rounded-xl p-5 text-left transition hover:bg-[#00ffc8]/10"
+          className="bg-white border border-[#E2E8F0] shadow-card flex items-center gap-3 rounded-xl p-5 text-left transition hover:bg-[#2563EB]/10"
         >
-          <FileDown className="h-8 w-8 text-[#00ffc8]" />
+          <FileDown className="h-8 w-8 text-[#2563EB]" />
           <div>
-            <p className="font-medium text-white">Trips CSV</p>
-            <p className="text-sm text-zinc-400">Export trip history</p>
+            <p className="font-medium text-[#0F172A]">Trips CSV</p>
+            <p className="text-sm text-[#64748B]">Export trip history</p>
           </div>
         </button>
         <button
           onClick={() => downloadUrl(exportApi.reportPdf(), 'fleet-report.pdf')}
-          className="glass neon-border flex items-center gap-3 rounded-xl p-5 text-left transition hover:bg-[#00ffc8]/10"
+          className="bg-white border border-[#E2E8F0] shadow-card flex items-center gap-3 rounded-xl p-5 text-left transition hover:bg-[#2563EB]/10"
         >
-          <FileDown className="h-8 w-8 text-[#00ffc8]" />
+          <FileDown className="h-8 w-8 text-[#2563EB]" />
           <div>
-            <p className="font-medium text-white">Report PDF</p>
-            <p className="text-sm text-zinc-400">Fleet summary report</p>
+            <p className="font-medium text-[#0F172A]">Report PDF</p>
+            <p className="text-sm text-[#64748B]">Fleet summary report</p>
           </div>
         </button>
       </div>

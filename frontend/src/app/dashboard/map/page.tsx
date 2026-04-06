@@ -26,11 +26,11 @@ export default function LiveMapPage() {
   return (
     <div className="p-8">
       <h1 className="text-3xl font-bold neon-text">Live Map</h1>
-      <p className="mt-1 text-zinc-400">Fleet locations (Mapbox)</p>
-      <div className="mt-6 h-[600px] overflow-hidden rounded-xl glass neon-border">
+      <p className="mt-1 text-[#64748B]">Fleet locations (Mapbox)</p>
+      <div className="mt-6 h-[600px] overflow-hidden rounded-xl bg-white border border-[#E2E8F0] shadow-card">
         {loading ? (
           <div className="flex h-full items-center justify-center">
-            <div className="h-10 w-10 animate-spin rounded-full border-2 border-[#00ffc8] border-t-transparent" />
+            <div className="h-10 w-10 animate-spin rounded-full border-2 border-[#2563EB] border-t-transparent" />
           </div>
         ) : (
           <MapboxMap vehicles={vehicles} />
@@ -44,8 +44,8 @@ export default function LiveMapPage() {
         ))}
       </div>
       {activeTrips.length > 0 && (
-        <div className="mt-6 glass neon-border rounded-xl p-4">
-          <h2 className="mb-3 text-sm font-semibold text-white">Dispatcher shared locations</h2>
+        <div className="mt-6 bg-white border border-[#E2E8F0] shadow-card rounded-xl p-4">
+          <h2 className="mb-3 text-sm font-semibold text-[#0F172A]">Dispatcher shared locations</h2>
           <div className="flex flex-wrap gap-2">
             {activeTrips
               .filter((t) => t.locationUrl)
@@ -61,7 +61,7 @@ export default function LiveMapPage() {
                 </a>
               ))}
             {activeTrips.filter((t) => t.locationUrl).length === 0 && (
-              <p className="text-xs text-zinc-500">No shared map links from dispatcher yet.</p>
+              <p className="text-xs text-[#64748B]">No shared map links from dispatcher yet.</p>
             )}
           </div>
         </div>

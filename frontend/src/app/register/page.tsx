@@ -59,50 +59,128 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
-      <div className="glass neon-border w-full max-w-md rounded-2xl p-8 shadow-xl">
-        <h1 className="mb-2 text-2xl font-bold neon-text">Register</h1>
-        <p className="mb-6 text-sm text-zinc-600">Create an account</p>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="mb-1 block text-sm text-zinc-600">Name</label>
-            <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2 text-zinc-900" required />
+    <div className="relative flex min-h-screen items-center justify-center px-4 selection:bg-[#2563EB]/20 selection:text-[#2563EB]">
+      <div className="fixed inset-0 z-0 mesh-gradient" />
+      <div className="fixed inset-0 z-0 glow-overlay" />
+
+      <main className="relative z-10 w-full max-w-[440px]">
+        <div className="glass-card rounded-[2rem] p-8 md:p-12 shadow-[0_20px_50px_rgba(15,23,42,0.08)] border border-[#E2E8F0]/80 overflow-hidden">
+          {/* Brand */}
+          <div className="flex flex-col items-center mb-10">
+            <div className="mb-4 relative">
+              <div className="absolute -inset-4 bg-[#2563EB]/10 blur-2xl rounded-full" />
+              <svg className="relative z-10 w-12 h-12 text-[#2563EB]" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+            <h1 className="font-headline text-3xl font-bold tracking-tight text-[#0F172A]">
+              FleetFlow<span className="text-[#2563EB]">AI</span>
+            </h1>
+            <p className="text-[#64748B] font-semibold tracking-widest mt-1 text-xs uppercase">Create Account</p>
           </div>
-          <div>
-            <label className="mb-1 block text-sm text-zinc-600">Email</label>
-            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2 text-zinc-900" required />
-          </div>
-          <div>
-            <label className="mb-1 block text-sm text-zinc-600">Password</label>
-            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2 text-zinc-900" minLength={6} required />
-          </div>
-          {!inviteToken && (
-            <div>
-              <label className="mb-1 block text-sm text-zinc-600">Community / Company Name</label>
+
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="space-y-2">
+              <label className="block text-xs font-bold uppercase tracking-widest text-[#64748B] ml-1" htmlFor="name">
+                Full Name
+              </label>
               <input
+                id="name"
                 type="text"
-                value={communityName}
-                onChange={(e) => setCommunityName(e.target.value)}
-                className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2 text-zinc-900"
-                placeholder="Your company or team name"
-                required={!inviteToken}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full bg-white border border-[#E2E8F0] focus:border-[#2563EB] focus:ring-4 focus:ring-[#2563EB]/5 h-14 px-4 rounded-xl text-[#0F172A] placeholder:text-[#64748B]/50 transition-all outline-none"
+                placeholder="John Doe"
+                required
               />
             </div>
-          )}
-          {inviteToken && inviteInfo && (
-            <p className="rounded-lg border border-teal-300 bg-teal-50 px-3 py-2 text-sm text-teal-800">
-              Joining: {inviteInfo.communityName || 'Community'} as {inviteInfo.role}
-            </p>
-          )}
-          {error && <p className="text-sm text-red-400">{error}</p>}
-          <button type="submit" disabled={loading} className="w-full rounded-lg bg-teal-600 py-2.5 font-medium text-white hover:bg-teal-700 disabled:opacity-50">
-            {loading ? 'Creating...' : 'Register'}
-          </button>
-        </form>
-        <Link href="/login" className="mt-4 block text-center text-sm text-teal-600 hover:underline">
-          Already have an account? Sign in
-        </Link>
-      </div>
+
+            <div className="space-y-2">
+              <label className="block text-xs font-bold uppercase tracking-widest text-[#64748B] ml-1" htmlFor="reg-email">
+                Fleet Identifier
+              </label>
+              <input
+                id="reg-email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full bg-white border border-[#E2E8F0] focus:border-[#2563EB] focus:ring-4 focus:ring-[#2563EB]/5 h-14 px-4 rounded-xl text-[#0F172A] placeholder:text-[#64748B]/50 transition-all outline-none"
+                placeholder="you@company.com"
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="block text-xs font-bold uppercase tracking-widest text-[#64748B] ml-1" htmlFor="reg-password">
+                Security Protocol
+              </label>
+              <input
+                id="reg-password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full bg-white border border-[#E2E8F0] focus:border-[#2563EB] focus:ring-4 focus:ring-[#2563EB]/5 h-14 px-4 rounded-xl text-[#0F172A] placeholder:text-[#64748B]/50 transition-all outline-none"
+                placeholder="Min 6 characters"
+                minLength={6}
+                required
+              />
+            </div>
+
+            {!inviteToken && (
+              <div className="space-y-2">
+                <label className="block text-xs font-bold uppercase tracking-widest text-[#64748B] ml-1" htmlFor="community">
+                  Community / Company
+                </label>
+                <input
+                  id="community"
+                  type="text"
+                  value={communityName}
+                  onChange={(e) => setCommunityName(e.target.value)}
+                  className="w-full bg-white border border-[#E2E8F0] focus:border-[#2563EB] focus:ring-4 focus:ring-[#2563EB]/5 h-14 px-4 rounded-xl text-[#0F172A] placeholder:text-[#64748B]/50 transition-all outline-none"
+                  placeholder="Your company or team name"
+                  required={!inviteToken}
+                />
+              </div>
+            )}
+
+            {inviteToken && inviteInfo && (
+              <div className="rounded-xl border border-[#10B981]/30 bg-[#10B981]/5 px-4 py-3 text-sm text-[#0F172A]">
+                <span className="font-medium">Joining:</span> {inviteInfo.communityName || 'Community'} as <span className="font-bold text-[#2563EB]">{inviteInfo.role}</span>
+              </div>
+            )}
+
+            {error && (
+              <p className="text-sm text-[#EF4444] bg-[#EF4444]/5 rounded-lg px-3 py-2">{error}</p>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full h-14 bg-[#2563EB] text-white font-headline font-bold text-lg rounded-xl shadow-[0_8px_20px_-4px_rgba(37,99,235,0.25)] hover:shadow-[0_12px_24px_-4px_rgba(37,99,235,0.35)] hover:bg-[#1D4ED8] active:scale-[0.98] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+            >
+              {loading ? (
+                <div className="h-5 w-5 animate-spin rounded-full border-2 border-white border-t-transparent" />
+              ) : (
+                <>
+                  <span>Create Account</span>
+                  <span>→</span>
+                </>
+              )}
+            </button>
+          </form>
+
+          {/* Footer */}
+          <div className="mt-8 pt-6 border-t border-[#E2E8F0] flex justify-center">
+            <div className="flex items-center space-x-2 text-sm">
+              <span className="text-[#64748B]">Already have an account?</span>
+              <Link href="/login" className="text-[#2563EB] font-bold hover:underline decoration-2 underline-offset-4">
+                Sign In
+              </Link>
+            </div>
+          </div>
+        </div>
+      </main>
     </div>
   );
 }

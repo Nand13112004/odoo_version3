@@ -9,7 +9,7 @@ import { AlertCircle, UserX } from 'lucide-react';
 
 const statusColors: Record<string, string> = {
   'On Duty': 'bg-emerald-500/20 text-emerald-400',
-  'Off Duty': 'bg-zinc-500/20 text-zinc-400',
+  'Off Duty': 'bg-zinc-500/20 text-[#64748B]',
   'On Trip': 'bg-blue-500/20 text-blue-400',
   Suspended: 'bg-red-500/20 text-red-400',
 };
@@ -51,7 +51,7 @@ export default function DriverCompliancePage() {
   if (loading) {
     return (
       <div className="p-8">
-        <div className="h-64 animate-pulse rounded-xl bg-zinc-800/50" />
+        <div className="h-64 animate-pulse rounded-xl bg-[#F1F5F9]" />
       </div>
     );
   }
@@ -71,7 +71,7 @@ export default function DriverCompliancePage() {
     <div className="p-8">
       <div className="mb-6">
         <h1 className="text-3xl font-bold neon-text">Driver Compliance</h1>
-        <p className="mt-1 text-zinc-400">License expiry, block expired drivers, toggle On Duty / Off Duty / Suspended</p>
+        <p className="mt-1 text-[#64748B]">License expiry, block expired drivers, toggle On Duty / Off Duty / Suspended</p>
       </div>
 
       {(expiredDrivers.length > 0 || expiringSoon.length > 0) && (
@@ -94,15 +94,15 @@ export default function DriverCompliancePage() {
         </div>
       )}
 
-      <div className="glass neon-border rounded-xl overflow-hidden">
+      <div className="bg-white border border-[#E2E8F0] shadow-card rounded-xl overflow-hidden">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-zinc-700/50 bg-zinc-900/30">
-              <th className="px-4 py-3 text-left text-sm font-medium text-zinc-400">Name</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-zinc-400">License</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-zinc-400">Expiry</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-zinc-400">Status</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-zinc-400">Action</th>
+            <tr className="border-b border-[#E2E8F0]/50 bg-white/30">
+              <th className="px-4 py-3 text-left text-sm font-medium text-[#64748B]">Name</th>
+              <th className="px-4 py-3 text-left text-sm font-medium text-[#64748B]">License</th>
+              <th className="px-4 py-3 text-left text-sm font-medium text-[#64748B]">Expiry</th>
+              <th className="px-4 py-3 text-left text-sm font-medium text-[#64748B]">Status</th>
+              <th className="px-4 py-3 text-left text-sm font-medium text-[#64748B]">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -110,17 +110,17 @@ export default function DriverCompliancePage() {
               const expired = d.licenseExpiry && new Date(d.licenseExpiry) < new Date();
               const canSetDuty = !expired || (d.status !== 'On Duty' && d.status !== 'On Trip');
               return (
-                <tr key={d._id} className="border-b border-zinc-800/50 hover:bg-zinc-800/30">
-                  <td className="px-4 py-3 font-medium text-white">{d.name}</td>
-                  <td className="px-4 py-3 text-zinc-300">{d.licenseNumber}</td>
+                <tr key={d._id} className="border-b border-zinc-800/50 hover:bg-[#F1F5F9]/30">
+                  <td className="px-4 py-3 font-medium text-[#0F172A]">{d.name}</td>
+                  <td className="px-4 py-3 text-[#475569]">{d.licenseNumber}</td>
                   <td className="px-4 py-3">
-                    <span className={expired ? 'text-red-400' : 'text-zinc-300'}>
+                    <span className={expired ? 'text-red-400' : 'text-[#475569]'}>
                       {d.licenseExpiry ? new Date(d.licenseExpiry).toLocaleDateString() : '-'}
                       {expired && <AlertCircle className="ml-1 inline h-4 w-4 text-red-400" />}
                     </span>
                   </td>
                   <td className="px-4 py-3">
-                    <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColors[d.status] || 'bg-zinc-500/20 text-zinc-400'}`}>
+                    <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${statusColors[d.status] || 'bg-zinc-500/20 text-[#64748B]'}`}>
                       {d.status}
                     </span>
                   </td>
@@ -129,7 +129,7 @@ export default function DriverCompliancePage() {
                       value={d.status}
                       disabled={updatingId === d._id || (expired && (d.status === 'On Duty' || d.status === 'On Trip'))}
                       onChange={(e) => handleStatusChange(d._id, e.target.value)}
-                      className="rounded border border-zinc-600 bg-zinc-800 px-2 py-1 text-xs text-white disabled:opacity-50"
+                      className="rounded border border-[#E2E8F0] bg-[#F1F5F9] px-2 py-1 text-xs text-[#0F172A] disabled:opacity-50"
                     >
                       {STATUS_OPTIONS.map((s) => (
                         <option key={s} value={s}>{s}</option>
@@ -145,7 +145,7 @@ export default function DriverCompliancePage() {
           </tbody>
         </table>
         {list.length === 0 && (
-          <div className="py-12 text-center text-zinc-500">No drivers</div>
+          <div className="py-12 text-center text-[#64748B]">No drivers</div>
         )}
       </div>
     </div>

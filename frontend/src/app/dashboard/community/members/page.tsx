@@ -39,7 +39,7 @@ export default function CommunityMembersPage() {
   return (
     <div className="p-8">
       <h1 className="text-3xl font-bold neon-text">Community Members</h1>
-      <p className="mt-1 text-zinc-600">View and manage your community members</p>
+      <p className="mt-1 text-[#64748B]">View and manage your community members</p>
 
       {loading ? (
         <div className="mt-8 h-10 w-10 animate-spin rounded-full border-2 border-teal-500 border-t-transparent" />
@@ -47,7 +47,7 @@ export default function CommunityMembersPage() {
         <div className="mt-8 overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-zinc-700 text-left text-sm text-zinc-600">
+              <tr className="border-b border-[#E2E8F0] text-left text-sm text-[#64748B]">
                 <th className="pb-3 pr-4">Name</th>
                 <th className="pb-3 pr-4">Email</th>
                 <th className="pb-3 pr-4">Role</th>
@@ -57,8 +57,8 @@ export default function CommunityMembersPage() {
             <tbody>
               {members.map((m) => (
                 <tr key={m._id} className="border-b border-zinc-800 text-sm">
-                  <td className="py-3 pr-4 text-zinc-900">{m.name}</td>
-                  <td className="py-3 pr-4 text-zinc-600">{m.email}</td>
+                  <td className="py-3 pr-4 text-[#0F172A]">{m.name}</td>
+                  <td className="py-3 pr-4 text-[#64748B]">{m.email}</td>
                   <td className="py-3 pr-4">
                     <span className="rounded bg-teal-100 px-2 py-0.5 text-teal-800">{m.role}</span>
                   </td>

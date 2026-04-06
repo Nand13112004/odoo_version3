@@ -33,9 +33,21 @@ exports.naturalLanguageQuery = async (req, res, next) => {
   try {
     const { query } = req.body;
     const communityId = req.user.communityId;
+    
+    // Require other models dynamically if not at top-level
+    const Driver = require('../models/Driver');
+    const Maintenance = require('../models/Maintenance');
+    const FuelLog = require('../models/FuelLog');
+
     const vehicles = await Vehicle.find({ communityId }).lean();
     const trips = await Trip.find({ communityId }).lean();
-    const result = await naturalLanguageQuery(query || '', { vehicles, trips });
+    const drivers = await Driver.find({ communityId }).lean();
+    const maintenanceRecords = await Maintenance.find({ communityId }).lean();
+    const fuelLogs = await FuelLog.find({ communityId }).lean();
+
+    const fleetData = { vehicles, trips, drivers, maintenanceRecords, fuelLogs };
+    
+    const result = await naturalLanguageQuery(query || '', fleetData);
     res.json({ success: true, data: result });
   } catch (err) {
     next(err);

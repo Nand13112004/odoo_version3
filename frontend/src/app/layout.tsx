@@ -12,7 +12,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-[#f8fafc] text-zinc-800 antialiased">
+      <body className="min-h-screen bg-[#F8FAFC] text-[#475569] antialiased font-body">
         <AuthProvider>{children}</AuthProvider>
       </body>
     </html>

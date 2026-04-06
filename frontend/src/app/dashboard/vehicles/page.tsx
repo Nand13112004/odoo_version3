@@ -50,11 +50,11 @@ export default function VehiclesPage() {
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold neon-text">Vehicle Registry</h1>
-          <p className="mt-1 text-sm text-zinc-400">Manage your fleet</p>
+          <p className="mt-1 text-sm text-[#64748B]">Manage your fleet</p>
         </div>
         {can(user?.role, Permissions.ACTIONS.addVehicle) && (
           <div>
-            <button onClick={() => setShowCreate((s) => !s)} className="rounded-lg bg-[#00ffc8]/20 px-4 py-2 text-sm text-[#00ffc8]">
+            <button onClick={() => setShowCreate((s) => !s)} className="rounded-lg border border-[#E2E8F0] bg-[#F1F5F9] px-4 py-2 text-sm font-medium text-[#0F172A] hover:bg-[#E2E8F0]">
               {showCreate ? 'Cancel' : 'Add Vehicle'}
             </button>
           </div>
@@ -62,35 +62,34 @@ export default function VehiclesPage() {
       </div>
 
       {showCreate && (
-        <form onSubmit={create} className="mb-6 space-y-3 rounded-lg bg-zinc-900/40 p-4">
-          <div className="grid gap-3 sm:grid-cols-2">
-            <input required placeholder="Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="rounded p-2 bg-zinc-800/50" />
-            <input required placeholder="License Plate" value={form.licensePlate} onChange={(e) => setForm({ ...form, licensePlate: e.target.value })} className="rounded p-2 bg-zinc-800/50" />
-            <input required placeholder="Capacity" value={form.capacity} onChange={(e) => setForm({ ...form, capacity: e.target.value })} className="rounded p-2 bg-zinc-800/50" />
-            <input required placeholder="Acquisition Cost" value={form.acquisitionCost} onChange={(e) => setForm({ ...form, acquisitionCost: e.target.value })} className="rounded p-2 bg-zinc-800/50" />
-            <input placeholder="Fuel Efficiency" value={form.fuelEfficiency} onChange={(e) => setForm({ ...form, fuelEfficiency: e.target.value })} className="rounded p-2 bg-zinc-800/50" />
+        <form onSubmit={create} className="bg-white border border-[#E2E8F0] shadow-card mb-6 space-y-4 rounded-xl p-5">
+          <div className="grid gap-4 sm:grid-cols-2">
+            <input required placeholder="Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="rounded-lg border border-[#E2E8F0] bg-white px-4 py-2.5 text-[#0F172A] placeholder-[#64748B] focus:border-[#2563EB] focus:outline-none focus:ring-1 focus:ring-[#2563EB]" />
+            <input required placeholder="License Plate" value={form.licensePlate} onChange={(e) => setForm({ ...form, licensePlate: e.target.value })} className="rounded-lg border border-[#E2E8F0] bg-white px-4 py-2.5 text-[#0F172A] placeholder-[#64748B] focus:border-[#2563EB] focus:outline-none focus:ring-1 focus:ring-[#2563EB]" />
+            <input required placeholder="Capacity" value={form.capacity} onChange={(e) => setForm({ ...form, capacity: e.target.value })} className="rounded-lg border border-[#E2E8F0] bg-white px-4 py-2.5 text-[#0F172A] placeholder-[#64748B] focus:border-[#2563EB] focus:outline-none focus:ring-1 focus:ring-[#2563EB]" />
+            <input required placeholder="Acquisition Cost" value={form.acquisitionCost} onChange={(e) => setForm({ ...form, acquisitionCost: e.target.value })} className="rounded-lg border border-[#E2E8F0] bg-white px-4 py-2.5 text-[#0F172A] placeholder-[#64748B] focus:border-[#2563EB] focus:outline-none focus:ring-1 focus:ring-[#2563EB]" />
+            <input placeholder="Fuel Efficiency" value={form.fuelEfficiency} onChange={(e) => setForm({ ...form, fuelEfficiency: e.target.value })} className="rounded-lg border border-[#E2E8F0] bg-white px-4 py-2.5 text-[#0F172A] placeholder-[#64748B] focus:border-[#2563EB] focus:outline-none focus:ring-1 focus:ring-[#2563EB]" />
           </div>
-          <div>
-            <button type="submit" className="rounded-lg bg-[#00ffc8]/20 px-4 py-2 text-sm text-[#00ffc8]">Create</button>
+          <div className="flex gap-2">
+            <button type="submit" className="rounded-lg bg-[#2563EB] px-4 py-2.5 text-sm font-medium text-[#0F172A] hover:bg-[#1D4ED8]">Create</button>
+            <button type="button" onClick={() => setShowCreate(false)} className="rounded-lg border border-[#E2E8F0] bg-[#F1F5F9] px-4 py-2.5 text-sm font-medium text-[#0F172A] hover:bg-[#E2E8F0]">Cancel</button>
           </div>
         </form>
       )}
 
       <div className="grid gap-3">
         {loading ? (
-          <div className="h-40 animate-pulse rounded bg-zinc-800/50" />
+          <div className="h-40 animate-pulse rounded-xl bg-[#E2E8F0]" />
         ) : vehicles.length === 0 ? (
-          <p className="text-sm text-zinc-500">No vehicles</p>
+          <p className="text-sm text-[#64748B]">No vehicles</p>
         ) : (
           vehicles.map((v) => (
-            <Link key={v._id} href={`/dashboard/vehicles/${v._id}`} className="rounded-lg bg-zinc-900/40 p-3 hover:bg-zinc-800/60">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium text-white">{v.name}</p>
-                  <p className="text-sm text-zinc-400">{v.licensePlate}</p>
-                </div>
-                <div className="text-sm text-zinc-400">{v.status}</div>
+            <Link key={v._id} href={`/dashboard/vehicles/${v._id}`} className="bg-white border border-[#E2E8F0] shadow-card flex items-center justify-between rounded-xl p-4 transition hover:bg-[#F1F5F9]">
+              <div>
+                <p className="font-medium text-[#0F172A]">{v.name}</p>
+                <p className="text-sm text-[#64748B]">{v.licensePlate}</p>
               </div>
+              <div className="text-sm text-[#2563EB]">{v.status}</div>
             </Link>
           ))
         )}

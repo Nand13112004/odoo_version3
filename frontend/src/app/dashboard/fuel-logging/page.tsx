@@ -60,7 +60,7 @@ export default function FuelLoggingPage() {
   if (loading) {
     return (
       <div className="p-8">
-        <div className="h-64 animate-pulse rounded-xl bg-zinc-800/50" />
+        <div className="h-64 animate-pulse rounded-xl bg-[#E2E8F0]" />
       </div>
     );
   }
@@ -70,25 +70,25 @@ export default function FuelLoggingPage() {
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold neon-text">Fuel Logging</h1>
-          <p className="mt-1 text-zinc-400">Add liters and fuel cost; attach to vehicle</p>
+          <p className="mt-1 text-[#64748B]">Add liters and fuel cost; attach to vehicle</p>
         </div>
         {canAdd && (
-          <button onClick={() => setShowForm(!showForm)} className="flex items-center gap-2 rounded-lg bg-[#00ffc8]/20 px-4 py-2 text-sm text-[#00ffc8] hover:bg-[#00ffc8]/30">
+          <button onClick={() => setShowForm(!showForm)} className="flex items-center gap-2 rounded-lg bg-[#2563EB] px-4 py-2 text-sm font-medium text-[#0F172A] hover:bg-[#1D4ED8]">
             <Plus className="h-4 w-4" /> Add fuel log
           </button>
         )}
       </div>
 
       {showForm && canAdd && (
-        <form onSubmit={handleSubmit} className="mb-6 space-y-3 rounded-xl glass neon-border p-5">
-          <h2 className="font-semibold text-white">New fuel log</h2>
+        <form onSubmit={handleSubmit} className="mb-6 space-y-3 rounded-xl bg-white border border-[#E2E8F0] shadow-card p-5">
+          <h2 className="font-semibold text-[#0F172A]">New fuel log</h2>
           <div className="grid gap-3 sm:grid-cols-3">
             <div>
-              <label className="block text-sm text-zinc-400">Vehicle</label>
+              <label className="block text-sm text-[#64748B]">Vehicle</label>
               <select
                 value={form.vehicleId}
                 onChange={(e) => setForm((f) => ({ ...f, vehicleId: e.target.value }))}
-                className="mt-1 w-full rounded-lg border border-zinc-600 bg-zinc-900/50 px-3 py-2 text-white"
+                className="mt-1 w-full rounded-lg border border-[#E2E8F0] bg-white px-3 py-2 text-[#0F172A]"
                 required
               >
                 <option value="">Select</option>
@@ -100,42 +100,42 @@ export default function FuelLoggingPage() {
               </select>
             </div>
             <div>
-              <label className="block text-sm text-zinc-400">Liters</label>
-              <input type="number" min={0} step={0.1} value={form.liters} onChange={(e) => setForm((f) => ({ ...f, liters: e.target.value }))} className="mt-1 w-full rounded-lg border border-zinc-600 bg-zinc-900/50 px-3 py-2 text-white" required />
+              <label className="block text-sm text-[#64748B]">Liters</label>
+              <input type="number" min={0} step={0.1} value={form.liters} onChange={(e) => setForm((f) => ({ ...f, liters: e.target.value }))} className="mt-1 w-full rounded-lg border border-[#E2E8F0] bg-white px-3 py-2 text-[#0F172A]" required />
             </div>
             <div>
-              <label className="block text-sm text-zinc-400">Cost ($)</label>
-              <input type="number" min={0} step={0.01} value={form.cost} onChange={(e) => setForm((f) => ({ ...f, cost: e.target.value }))} className="mt-1 w-full rounded-lg border border-zinc-600 bg-zinc-900/50 px-3 py-2 text-white" required />
+              <label className="block text-sm text-[#64748B]">Cost ($)</label>
+              <input type="number" min={0} step={0.01} value={form.cost} onChange={(e) => setForm((f) => ({ ...f, cost: e.target.value }))} className="mt-1 w-full rounded-lg border border-[#E2E8F0] bg-white px-3 py-2 text-[#0F172A]" required />
             </div>
           </div>
-          <button type="submit" disabled={submitting} className="rounded-lg bg-[#00ffc8]/20 px-4 py-2 text-sm text-[#00ffc8] hover:bg-[#00ffc8]/30 disabled:opacity-50">
+          <button type="submit" disabled={submitting} className="rounded-lg bg-[#2563EB] px-4 py-2.5 text-sm font-medium text-[#0F172A] hover:bg-[#1D4ED8] disabled:opacity-50">
             {submitting ? 'Adding...' : 'Save'}
           </button>
         </form>
       )}
 
-      <div className="glass neon-border rounded-xl overflow-hidden">
+      <div className="bg-white border border-[#E2E8F0] shadow-card rounded-xl overflow-hidden">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-zinc-700/50 bg-zinc-900/30">
-              <th className="px-4 py-3 text-left text-sm font-medium text-zinc-400">Vehicle</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-zinc-400">Liters</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-zinc-400">Cost</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-zinc-400">Date</th>
+            <tr className="border-b border-[#E2E8F0] bg-[#F1F5F9]">
+              <th className="px-4 py-3 text-left text-sm font-medium text-[#2563EB]">Vehicle</th>
+              <th className="px-4 py-3 text-left text-sm font-medium text-[#2563EB]">Liters</th>
+              <th className="px-4 py-3 text-left text-sm font-medium text-[#2563EB]">Cost</th>
+              <th className="px-4 py-3 text-left text-sm font-medium text-[#2563EB]">Date</th>
             </tr>
           </thead>
           <tbody>
             {logs.map((f) => (
-              <tr key={f._id} className="border-b border-zinc-800/50 hover:bg-zinc-800/30">
-                <td className="px-4 py-3 text-white">{typeof f.vehicleId === 'object' && f.vehicleId?.name ? (f.vehicleId as { name: string }).name : '-'}</td>
-                <td className="px-4 py-3 text-zinc-300">{f.liters}</td>
-                <td className="px-4 py-3 text-zinc-300">${f.cost?.toLocaleString()}</td>
-                <td className="px-4 py-3 text-zinc-400">{f.date ? new Date(f.date).toLocaleDateString() : '-'}</td>
+              <tr key={f._id} className="border-b border-[#E2E8F0] hover:bg-[#F1F5F9]">
+                <td className="px-4 py-3 font-medium text-[#0F172A]">{typeof f.vehicleId === 'object' && f.vehicleId?.name ? (f.vehicleId as { name: string }).name : '-'}</td>
+                <td className="px-4 py-3 text-[#2563EB]">{f.liters}</td>
+                <td className="px-4 py-3 text-[#2563EB]">${f.cost?.toLocaleString()}</td>
+                <td className="px-4 py-3 text-[#2563EB]">{f.date ? new Date(f.date).toLocaleDateString() : '-'}</td>
               </tr>
             ))}
           </tbody>
         </table>
-        {logs.length === 0 && <div className="py-12 text-center text-zinc-500">No fuel logs yet</div>}
+        {logs.length === 0 && <div className="py-12 text-center text-[#64748B]">No fuel logs yet</div>}
       </div>
     </div>
   );

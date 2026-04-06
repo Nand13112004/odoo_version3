@@ -17,7 +17,6 @@ const inviteSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-inviteSchema.index({ inviteToken: 1 });
 inviteSchema.index({ communityId: 1, email: 1 });
 
 inviteSchema.statics.generateToken = function () {

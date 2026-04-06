@@ -48,26 +48,26 @@ export default function InviteMembersPage() {
   return (
     <div className="p-8">
       <h1 className="text-3xl font-bold neon-text">Invite Members</h1>
-      <p className="mt-1 text-zinc-600">Invite users to your community with a specific role</p>
+      <p className="mt-1 text-[#64748B]">Invite users to your community with a specific role</p>
 
       <form onSubmit={handleSubmit} className="mt-8 max-w-md">
         <div className="space-y-4">
           <div>
-            <label className="mb-1 block text-sm text-zinc-600">Email</label>
+            <label className="mb-1 block text-sm text-[#64748B]">Email</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2 text-zinc-900"
+              className="w-full rounded-lg border border-[#E2E8F0] bg-white px-4 py-2 text-[#0F172A]"
               required
             />
           </div>
           <div>
-            <label className="mb-1 block text-sm text-zinc-600">Role</label>
+            <label className="mb-1 block text-sm text-[#64748B]">Role</label>
             <select
               value={role}
               onChange={(e) => setRole(e.target.value)}
-              className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2 text-zinc-900"
+              className="w-full rounded-lg border border-[#E2E8F0] bg-white px-4 py-2 text-[#0F172A]"
             >
               {INVITE_ROLES.map((r) => (
                 <option key={r} value={r}>
@@ -80,7 +80,7 @@ export default function InviteMembersPage() {
         {error && <p className="mt-2 text-sm text-red-400">{error}</p>}
         {inviteUrl && (
           <div className="mt-4 rounded-lg border border-teal-300 bg-teal-50 p-4">
-            <p className="text-sm text-zinc-600">Invite link created. Share with the user:</p>
+            <p className="text-sm text-[#64748B]">Invite link created. Share with the user:</p>
             <p className="mt-1 truncate text-sm text-teal-800">{inviteUrl}</p>
             <button type="button" onClick={copyUrl} className="mt-2 text-sm text-teal-800 hover:underline">
               Copy link
@@ -90,7 +90,7 @@ export default function InviteMembersPage() {
         <button
           type="submit"
           disabled={loading}
-          className="mt-6 rounded-lg bg-[#00ffc8]/20 px-4 py-2 font-medium text-teal-800 hover:bg-[#00ffc8]/30 disabled:opacity-50"
+          className="mt-6 rounded-lg bg-[#2563EB]/20 px-4 py-2 font-medium text-teal-800 hover:bg-[#2563EB]/30 disabled:opacity-50"
         >
           {loading ? 'Sending...' : 'Send Invite'}
         </button>

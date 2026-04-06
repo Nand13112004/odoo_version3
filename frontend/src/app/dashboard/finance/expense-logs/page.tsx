@@ -60,7 +60,7 @@ export default function ExpenseLogsPage() {
   if (loading) {
     return (
       <div className="p-8">
-        <div className="h-64 animate-pulse rounded-xl bg-zinc-800/50" />
+        <div className="h-64 animate-pulse rounded-xl bg-[#F1F5F9]" />
       </div>
     );
   }
@@ -71,16 +71,16 @@ export default function ExpenseLogsPage() {
     <div className="p-8">
       <div className="mb-6">
         <h1 className="text-3xl font-bold neon-text">Expense Logs</h1>
-        <p className="mt-1 text-zinc-400">View-only access. Filter by vehicle and date range.</p>
+        <p className="mt-1 text-[#64748B]">View-only access. Filter by vehicle and date range.</p>
       </div>
 
       <div className="mb-6 flex flex-wrap gap-3">
         <div>
-          <label className="block text-xs text-zinc-500">Vehicle</label>
+          <label className="block text-xs text-[#64748B]">Vehicle</label>
           <select
             value={filterVehicle}
             onChange={(e) => setFilterVehicle(e.target.value)}
-            className="mt-1 rounded-lg border border-zinc-600 bg-zinc-900/50 px-3 py-2 text-sm text-white"
+            className="mt-1 rounded-lg border border-[#E2E8F0] bg-white px-3 py-2 text-sm text-[#0F172A]"
           >
             <option value="">All</option>
             {vehicles.map((v) => (
@@ -89,93 +89,93 @@ export default function ExpenseLogsPage() {
           </select>
         </div>
         <div>
-          <label className="block text-xs text-zinc-500">From date</label>
+          <label className="block text-xs text-[#64748B]">From date</label>
           <input
             type="date"
             value={filterDateFrom}
             onChange={(e) => setFilterDateFrom(e.target.value)}
-            className="mt-1 rounded-lg border border-zinc-600 bg-zinc-900/50 px-3 py-2 text-sm text-white"
+            className="mt-1 rounded-lg border border-[#E2E8F0] bg-white px-3 py-2 text-sm text-[#0F172A]"
           />
         </div>
         <div>
-          <label className="block text-xs text-zinc-500">To date</label>
+          <label className="block text-xs text-[#64748B]">To date</label>
           <input
             type="date"
             value={filterDateTo}
             onChange={(e) => setFilterDateTo(e.target.value)}
-            className="mt-1 rounded-lg border border-zinc-600 bg-zinc-900/50 px-3 py-2 text-sm text-white"
+            className="mt-1 rounded-lg border border-[#E2E8F0] bg-white px-3 py-2 text-sm text-[#0F172A]"
           />
         </div>
       </div>
 
       <div className="mb-6 grid gap-4 sm:grid-cols-2">
-        <div className="glass neon-border rounded-lg p-4 flex items-center gap-3">
-          <Fuel className="h-8 w-8 text-[#00ffc8]/70" />
+        <div className="bg-white border border-[#E2E8F0] shadow-card rounded-lg p-4 flex items-center gap-3">
+          <Fuel className="h-8 w-8 text-[#2563EB]/70" />
           <div>
-            <p className="text-xs text-zinc-400">Fuel (filtered)</p>
-            <p className="text-xl font-bold text-white">${totalFuel.toLocaleString()}</p>
+            <p className="text-xs text-[#64748B]">Fuel (filtered)</p>
+            <p className="text-xl font-bold text-[#0F172A]">${totalFuel.toLocaleString()}</p>
           </div>
         </div>
-        <div className="glass neon-border rounded-lg p-4 flex items-center gap-3">
+        <div className="bg-white border border-[#E2E8F0] shadow-card rounded-lg p-4 flex items-center gap-3">
           <Wrench className="h-8 w-8 text-amber-400/70" />
           <div>
-            <p className="text-xs text-zinc-400">Maintenance (filtered)</p>
-            <p className="text-xl font-bold text-white">${totalMaint.toLocaleString()}</p>
+            <p className="text-xs text-[#64748B]">Maintenance (filtered)</p>
+            <p className="text-xl font-bold text-[#0F172A]">${totalMaint.toLocaleString()}</p>
           </div>
         </div>
       </div>
 
       <div className="space-y-6">
         <div>
-          <h2 className="mb-2 text-lg font-semibold text-white">Fuel logs</h2>
-          <div className="glass neon-border rounded-xl overflow-hidden">
+          <h2 className="mb-2 text-lg font-semibold text-[#0F172A]">Fuel logs</h2>
+          <div className="bg-white border border-[#E2E8F0] shadow-card rounded-xl overflow-hidden">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-zinc-700/50 bg-zinc-900/30">
-                  <th className="px-4 py-3 text-left text-sm font-medium text-zinc-400">Vehicle</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-zinc-400">Liters</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-zinc-400">Cost</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-zinc-400">Date</th>
+                <tr className="border-b border-[#E2E8F0]/50 bg-white/30">
+                  <th className="px-4 py-3 text-left text-sm font-medium text-[#64748B]">Vehicle</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-[#64748B]">Liters</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-[#64748B]">Cost</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-[#64748B]">Date</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredFuel.map((f) => (
                   <tr key={f._id} className="border-b border-zinc-800/50">
-                    <td className="px-4 py-3 text-white">{typeof f.vehicleId === 'object' && f.vehicleId?.name ? (f.vehicleId as { name: string }).name : '-'}</td>
-                    <td className="px-4 py-3 text-zinc-300">{f.liters}</td>
-                    <td className="px-4 py-3 text-zinc-300">${f.cost?.toLocaleString()}</td>
-                    <td className="px-4 py-3 text-zinc-400">{f.date ? new Date(f.date).toLocaleDateString() : '-'}</td>
+                    <td className="px-4 py-3 text-[#0F172A]">{typeof f.vehicleId === 'object' && f.vehicleId?.name ? (f.vehicleId as { name: string }).name : '-'}</td>
+                    <td className="px-4 py-3 text-[#475569]">{f.liters}</td>
+                    <td className="px-4 py-3 text-[#475569]">${f.cost?.toLocaleString()}</td>
+                    <td className="px-4 py-3 text-[#64748B]">{f.date ? new Date(f.date).toLocaleDateString() : '-'}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
-            {filteredFuel.length === 0 && <div className="py-8 text-center text-zinc-500">No fuel logs</div>}
+            {filteredFuel.length === 0 && <div className="py-8 text-center text-[#64748B]">No fuel logs</div>}
           </div>
         </div>
         <div>
-          <h2 className="mb-2 text-lg font-semibold text-white">Maintenance costs</h2>
-          <div className="glass neon-border rounded-xl overflow-hidden">
+          <h2 className="mb-2 text-lg font-semibold text-[#0F172A]">Maintenance costs</h2>
+          <div className="bg-white border border-[#E2E8F0] shadow-card rounded-xl overflow-hidden">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-zinc-700/50 bg-zinc-900/30">
-                  <th className="px-4 py-3 text-left text-sm font-medium text-zinc-400">Vehicle</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-zinc-400">Description</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-zinc-400">Cost</th>
-                  <th className="px-4 py-3 text-left text-sm font-medium text-zinc-400">Date</th>
+                <tr className="border-b border-[#E2E8F0]/50 bg-white/30">
+                  <th className="px-4 py-3 text-left text-sm font-medium text-[#64748B]">Vehicle</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-[#64748B]">Description</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-[#64748B]">Cost</th>
+                  <th className="px-4 py-3 text-left text-sm font-medium text-[#64748B]">Date</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredMaint.map((m) => (
                   <tr key={m._id} className="border-b border-zinc-800/50">
-                    <td className="px-4 py-3 text-white">{typeof m.vehicleId === 'object' && m.vehicleId?.name ? (m.vehicleId as { name: string }).name : '-'}</td>
-                    <td className="px-4 py-3 text-zinc-300">{m.description}</td>
-                    <td className="px-4 py-3 text-zinc-300">${m.cost?.toLocaleString()}</td>
-                    <td className="px-4 py-3 text-zinc-400">{m.date ? new Date(m.date).toLocaleDateString() : '-'}</td>
+                    <td className="px-4 py-3 text-[#0F172A]">{typeof m.vehicleId === 'object' && m.vehicleId?.name ? (m.vehicleId as { name: string }).name : '-'}</td>
+                    <td className="px-4 py-3 text-[#475569]">{m.description}</td>
+                    <td className="px-4 py-3 text-[#475569]">${m.cost?.toLocaleString()}</td>
+                    <td className="px-4 py-3 text-[#64748B]">{m.date ? new Date(m.date).toLocaleDateString() : '-'}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
-            {filteredMaint.length === 0 && <div className="py-8 text-center text-zinc-500">No maintenance entries</div>}
+            {filteredMaint.length === 0 && <div className="py-8 text-center text-[#64748B]">No maintenance entries</div>}
           </div>
         </div>
       </div>

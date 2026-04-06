@@ -42,28 +42,28 @@ export default function CommunitySettingsPage() {
   return (
     <div className="p-8">
       <h1 className="text-3xl font-bold neon-text">Community Settings</h1>
-      <p className="mt-1 text-zinc-600">Update your community name</p>
+      <p className="mt-1 text-[#64748B]">Update your community name</p>
 
       {loading ? (
-        <div className="mt-8 h-10 w-10 animate-spin rounded-full border-2 border-[#00ffc8] border-t-transparent" />
+        <div className="mt-8 h-10 w-10 animate-spin rounded-full border-2 border-[#2563EB] border-t-transparent" />
       ) : (
         <form onSubmit={handleSubmit} className="mt-8 max-w-md">
           <div>
-            <label className="mb-1 block text-sm text-zinc-600">Community / Company Name</label>
+            <label className="mb-1 block text-sm text-[#64748B]">Community / Company Name</label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full rounded-lg border border-zinc-300 bg-white px-4 py-2 text-zinc-900"
+              className="w-full rounded-lg border border-[#E2E8F0] bg-white px-4 py-2 text-[#0F172A]"
               required
             />
           </div>
           {error && <p className="mt-2 text-sm text-red-400">{error}</p>}
-          {success && <p className="mt-2 text-sm text-[#00ffc8]">Settings saved.</p>}
+          {success && <p className="mt-2 text-sm text-[#2563EB]">Settings saved.</p>}
           <button
             type="submit"
             disabled={saving}
-            className="mt-4 rounded-lg bg-teal-600 px-4 py-2 font-medium text-white hover:bg-teal-700 disabled:opacity-50"
+            className="mt-4 rounded-lg bg-teal-600 px-4 py-2 font-medium text-[#0F172A] hover:bg-teal-700 disabled:opacity-50"
           >
             {saving ? 'Saving...' : 'Save'}
           </button>

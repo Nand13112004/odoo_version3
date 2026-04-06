@@ -36,7 +36,7 @@ export default function MapboxMap({ vehicles }: { vehicles: Vehicle[] }) {
 
   if (!process.env.NEXT_PUBLIC_MAPBOX_TOKEN) {
     return (
-      <div className="flex h-full items-center justify-center bg-zinc-900/50 text-zinc-400">
+      <div className="flex h-full items-center justify-center bg-zinc-900/50 text-[#64748B]">
         Add NEXT_PUBLIC_MAPBOX_TOKEN to .env.local for live map.
       </div>
     );

@@ -64,7 +64,7 @@ export default function ExpensesPage() {
   if (loading) {
     return (
       <div className="p-8">
-        <div className="h-64 animate-pulse rounded-xl bg-zinc-800/50" />
+        <div className="h-64 animate-pulse rounded-xl bg-[#F1F5F9]" />
       </div>
     );
   }
@@ -78,37 +78,37 @@ export default function ExpensesPage() {
     <div className="p-8">
       <div className="mb-6">
         <h1 className="text-3xl font-bold neon-text">Expenses</h1>
-        <p className="mt-1 text-zinc-400">View all fuel logs and maintenance costs. Edit entries when permitted.</p>
+        <p className="mt-1 text-[#64748B]">View all fuel logs and maintenance costs. Edit entries when permitted.</p>
       </div>
 
       <div className="mb-6 grid gap-4 sm:grid-cols-2">
-        <div className="glass neon-border rounded-lg p-4 flex items-center gap-3">
-          <Fuel className="h-8 w-8 text-[#00ffc8]/70" />
+        <div className="bg-white border border-[#E2E8F0] shadow-card rounded-lg p-4 flex items-center gap-3">
+          <Fuel className="h-8 w-8 text-[#2563EB]/70" />
           <div>
-            <p className="text-xs text-zinc-400">Total fuel cost</p>
-            <p className="text-xl font-bold text-white">${totalFuelCost.toLocaleString()}</p>
+            <p className="text-xs text-[#64748B]">Total fuel cost</p>
+            <p className="text-xl font-bold text-[#0F172A]">${totalFuelCost.toLocaleString()}</p>
           </div>
         </div>
-        <div className="glass neon-border rounded-lg p-4 flex items-center gap-3">
+        <div className="bg-white border border-[#E2E8F0] shadow-card rounded-lg p-4 flex items-center gap-3">
           <Wrench className="h-8 w-8 text-amber-400/70" />
           <div>
-            <p className="text-xs text-zinc-400">Total maintenance cost</p>
-            <p className="text-xl font-bold text-white">${totalMaintCost.toLocaleString()}</p>
+            <p className="text-xs text-[#64748B]">Total maintenance cost</p>
+            <p className="text-xl font-bold text-[#0F172A]">${totalMaintCost.toLocaleString()}</p>
           </div>
         </div>
       </div>
 
       <div className="mb-8">
-        <h2 className="mb-3 text-lg font-semibold text-white">Fuel logs</h2>
-        <div className="glass neon-border rounded-xl overflow-hidden">
+        <h2 className="mb-3 text-lg font-semibold text-[#0F172A]">Fuel logs</h2>
+        <div className="bg-white border border-[#E2E8F0] shadow-card rounded-xl overflow-hidden">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-zinc-700/50 bg-zinc-900/30">
-                <th className="px-4 py-3 text-left text-sm font-medium text-zinc-400">Vehicle</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-zinc-400">Liters</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-zinc-400">Cost</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-zinc-400">Date</th>
-                {canEdit && <th className="px-4 py-3 text-left text-sm font-medium text-zinc-400">Edit</th>}
+              <tr className="border-b border-[#E2E8F0]/50 bg-white/30">
+                <th className="px-4 py-3 text-left text-sm font-medium text-[#64748B]">Vehicle</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-[#64748B]">Liters</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-[#64748B]">Cost</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-[#64748B]">Date</th>
+                {canEdit && <th className="px-4 py-3 text-left text-sm font-medium text-[#64748B]">Edit</th>}
               </tr>
             </thead>
             <tbody>
@@ -116,8 +116,8 @@ export default function ExpensesPage() {
                 const vehicleName = typeof f.vehicleId === 'object' && f.vehicleId?.name ? f.vehicleId.name : '-';
                 const isEditing = editingFuel === f._id;
                 return (
-                  <tr key={f._id} className="border-b border-zinc-800/50 hover:bg-zinc-800/30">
-                    <td className="px-4 py-3 text-white">{vehicleName}</td>
+                  <tr key={f._id} className="border-b border-zinc-800/50 hover:bg-[#F1F5F9]/30">
+                    <td className="px-4 py-3 text-[#0F172A]">{vehicleName}</td>
                     {isEditing ? (
                       <>
                         <td className="px-4 py-3">
@@ -127,7 +127,7 @@ export default function ExpensesPage() {
                             step={0.1}
                             value={editFuelForm.liters}
                             onChange={(e) => setEditFuelForm((x) => ({ ...x, liters: Number(e.target.value) }))}
-                            className="w-20 rounded border border-zinc-600 bg-zinc-800 px-2 py-1 text-white"
+                            className="w-20 rounded border border-[#E2E8F0] bg-[#F1F5F9] px-2 py-1 text-[#0F172A]"
                           />
                         </td>
                         <td className="px-4 py-3">
@@ -137,7 +137,7 @@ export default function ExpensesPage() {
                             step={0.01}
                             value={editFuelForm.cost}
                             onChange={(e) => setEditFuelForm((x) => ({ ...x, cost: Number(e.target.value) }))}
-                            className="w-24 rounded border border-zinc-600 bg-zinc-800 px-2 py-1 text-white"
+                            className="w-24 rounded border border-[#E2E8F0] bg-[#F1F5F9] px-2 py-1 text-[#0F172A]"
                           />
                         </td>
                         <td className="px-4 py-3">
@@ -145,19 +145,19 @@ export default function ExpensesPage() {
                             type="date"
                             value={editFuelForm.date}
                             onChange={(e) => setEditFuelForm((x) => ({ ...x, date: e.target.value }))}
-                            className="rounded border border-zinc-600 bg-zinc-800 px-2 py-1 text-white"
+                            className="rounded border border-[#E2E8F0] bg-[#F1F5F9] px-2 py-1 text-[#0F172A]"
                           />
                         </td>
                         <td className="px-4 py-3">
-                          <button onClick={() => handleSaveFuel(f._id)} className="text-[#00ffc8] text-sm mr-2">Save</button>
-                          <button onClick={() => setEditingFuel(null)} className="text-zinc-400 text-sm">Cancel</button>
+                          <button onClick={() => handleSaveFuel(f._id)} className="text-[#2563EB] text-sm mr-2">Save</button>
+                          <button onClick={() => setEditingFuel(null)} className="text-[#64748B] text-sm">Cancel</button>
                         </td>
                       </>
                     ) : (
                       <>
-                        <td className="px-4 py-3 text-zinc-300">{f.liters}</td>
-                        <td className="px-4 py-3 text-zinc-300">${f.cost?.toLocaleString()}</td>
-                        <td className="px-4 py-3 text-zinc-400">{f.date ? new Date(f.date).toLocaleDateString() : '-'}</td>
+                        <td className="px-4 py-3 text-[#475569]">{f.liters}</td>
+                        <td className="px-4 py-3 text-[#475569]">${f.cost?.toLocaleString()}</td>
+                        <td className="px-4 py-3 text-[#64748B]">{f.date ? new Date(f.date).toLocaleDateString() : '-'}</td>
                         {canEdit && (
                           <td className="px-4 py-3">
                             <button
@@ -165,7 +165,7 @@ export default function ExpensesPage() {
                                 setEditingFuel(f._id);
                                 setEditFuelForm({ liters: f.liters, cost: f.cost, date: f.date ? new Date(f.date).toISOString().slice(0, 10) : '' });
                               }}
-                              className="text-[#00ffc8] text-sm"
+                              className="text-[#2563EB] text-sm"
                             >
                               Edit
                             </button>
@@ -178,21 +178,21 @@ export default function ExpensesPage() {
               })}
             </tbody>
           </table>
-          {fuelLogs.length === 0 && <div className="py-8 text-center text-zinc-500">No fuel logs</div>}
+          {fuelLogs.length === 0 && <div className="py-8 text-center text-[#64748B]">No fuel logs</div>}
         </div>
       </div>
 
       <div>
-        <h2 className="mb-3 text-lg font-semibold text-white">Maintenance costs</h2>
-        <div className="glass neon-border rounded-xl overflow-hidden">
+        <h2 className="mb-3 text-lg font-semibold text-[#0F172A]">Maintenance costs</h2>
+        <div className="bg-white border border-[#E2E8F0] shadow-card rounded-xl overflow-hidden">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-zinc-700/50 bg-zinc-900/30">
-                <th className="px-4 py-3 text-left text-sm font-medium text-zinc-400">Vehicle</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-zinc-400">Description</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-zinc-400">Cost</th>
-                <th className="px-4 py-3 text-left text-sm font-medium text-zinc-400">Date</th>
-                {canEdit && <th className="px-4 py-3 text-left text-sm font-medium text-zinc-400">Edit</th>}
+              <tr className="border-b border-[#E2E8F0]/50 bg-white/30">
+                <th className="px-4 py-3 text-left text-sm font-medium text-[#64748B]">Vehicle</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-[#64748B]">Description</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-[#64748B]">Cost</th>
+                <th className="px-4 py-3 text-left text-sm font-medium text-[#64748B]">Date</th>
+                {canEdit && <th className="px-4 py-3 text-left text-sm font-medium text-[#64748B]">Edit</th>}
               </tr>
             </thead>
             <tbody>
@@ -200,15 +200,15 @@ export default function ExpensesPage() {
                 const vehicleId = typeof m.vehicleId === 'object' && m.vehicleId?._id ? (m.vehicleId as { name?: string }).name : '-';
                 const isEditing = editingMaint === m._id;
                 return (
-                  <tr key={m._id} className="border-b border-zinc-800/50 hover:bg-zinc-800/30">
-                    <td className="px-4 py-3 text-white">{vehicleId}</td>
+                  <tr key={m._id} className="border-b border-zinc-800/50 hover:bg-[#F1F5F9]/30">
+                    <td className="px-4 py-3 text-[#0F172A]">{vehicleId}</td>
                     {isEditing ? (
                       <>
                         <td className="px-4 py-3">
                           <input
                             value={editMaintForm.description}
                             onChange={(e) => setEditMaintForm((x) => ({ ...x, description: e.target.value }))}
-                            className="min-w-[180px] rounded border border-zinc-600 bg-zinc-800 px-2 py-1 text-white"
+                            className="min-w-[180px] rounded border border-[#E2E8F0] bg-[#F1F5F9] px-2 py-1 text-[#0F172A]"
                           />
                         </td>
                         <td className="px-4 py-3">
@@ -218,20 +218,20 @@ export default function ExpensesPage() {
                             step={0.01}
                             value={editMaintForm.cost}
                             onChange={(e) => setEditMaintForm((x) => ({ ...x, cost: Number(e.target.value) }))}
-                            className="w-24 rounded border border-zinc-600 bg-zinc-800 px-2 py-1 text-white"
+                            className="w-24 rounded border border-[#E2E8F0] bg-[#F1F5F9] px-2 py-1 text-[#0F172A]"
                           />
                         </td>
-                        <td className="px-4 py-3 text-zinc-400">{m.date ? new Date(m.date).toLocaleDateString() : '-'}</td>
+                        <td className="px-4 py-3 text-[#64748B]">{m.date ? new Date(m.date).toLocaleDateString() : '-'}</td>
                         <td className="px-4 py-3">
-                          <button onClick={() => handleSaveMaint(m._id)} className="text-[#00ffc8] text-sm mr-2">Save</button>
-                          <button onClick={() => setEditingMaint(null)} className="text-zinc-400 text-sm">Cancel</button>
+                          <button onClick={() => handleSaveMaint(m._id)} className="text-[#2563EB] text-sm mr-2">Save</button>
+                          <button onClick={() => setEditingMaint(null)} className="text-[#64748B] text-sm">Cancel</button>
                         </td>
                       </>
                     ) : (
                       <>
-                        <td className="px-4 py-3 text-zinc-300">{m.description}</td>
-                        <td className="px-4 py-3 text-zinc-300">${m.cost?.toLocaleString()}</td>
-                        <td className="px-4 py-3 text-zinc-400">{m.date ? new Date(m.date).toLocaleDateString() : '-'}</td>
+                        <td className="px-4 py-3 text-[#475569]">{m.description}</td>
+                        <td className="px-4 py-3 text-[#475569]">${m.cost?.toLocaleString()}</td>
+                        <td className="px-4 py-3 text-[#64748B]">{m.date ? new Date(m.date).toLocaleDateString() : '-'}</td>
                         {canEdit && (
                           <td className="px-4 py-3">
                             <button
@@ -239,7 +239,7 @@ export default function ExpensesPage() {
                                 setEditingMaint(m._id);
                                 setEditMaintForm({ description: m.description, cost: m.cost });
                               }}
-                              className="text-[#00ffc8] text-sm"
+                              className="text-[#2563EB] text-sm"
                             >
                               Edit
                             </button>
@@ -252,7 +252,7 @@ export default function ExpensesPage() {
               })}
             </tbody>
           </table>
-          {maintenances.length === 0 && <div className="py-8 text-center text-zinc-500">No maintenance entries</div>}
+          {maintenances.length === 0 && <div className="py-8 text-center text-[#64748B]">No maintenance entries</div>}
         </div>
       </div>
     </div>

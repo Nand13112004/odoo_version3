@@ -6,7 +6,7 @@ const genAI = process.env.GEMINI_API_KEY
 
 function getModel() {
   if (!genAI) throw new Error('GEMINI_API_KEY is not set');
-  return genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+  return genAI.getGenerativeModel({ model: 'gemini-2.5-flash' });
 }
 
 async function analyzeVehicleRisk(vehicleData) {
@@ -76,15 +76,25 @@ async function naturalLanguageQuery(queryText, fleetData) {
   if (!genAI) {
     return { answer: 'Configure GEMINI_API_KEY for natural language queries.' };
   }
-  const dataStr = JSON.stringify(
-    { vehiclesCount: fleetData.vehicles?.length, tripsCount: fleetData.trips?.length },
-    null,
- 2);
-  const prompt = `Fleet data context: ${dataStr}
+  
+  // Safely stringify the full fleetData to pass to Gemini
+  // To avoid huge payloads, if data grows extremely large, consider truncating or summarizing,
+  // but for the user's request, provide the full structured database data to Gemini.
+  const dataStr = JSON.stringify(fleetData, null, 2);
+  
+  const prompt = `You are an AI assistant for a fleet management system.
+Your ONLY source of knowledge is the following JSON database export:
 
-User question: ${queryText}
+=== DATABASE CONTEXT START ===
+${dataStr}
+=== DATABASE CONTEXT END ===
 
-Reply in one short paragraph. Be concise.`;
+Instructions:
+1. Answer the user's question using ONLY the data provided in the DATABASE CONTEXT above.
+2. If the user's question cannot be answered using this data, respond explicitly with: "I do not have enough information in the database to answer this question." Do not guess or use outside knowledge.
+3. Be helpful, concise, and format your output as a single, clear paragraph or simple list unless requested otherwise.
+
+User question: ${queryText}`;
   try {
     const model = getModel();
     const result = await model.generateContent(prompt);

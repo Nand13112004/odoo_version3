@@ -29,7 +29,7 @@ export default function FuelLogsPage() {
   if (loading) {
     return (
       <div className="p-8">
-        <div className="h-64 animate-pulse rounded-xl bg-zinc-800/50" />
+        <div className="h-64 animate-pulse rounded-xl bg-[#F1F5F9]" />
       </div>
     );
   }
@@ -53,59 +53,59 @@ export default function FuelLogsPage() {
     <div className="p-8">
       <div className="mb-6">
         <h1 className="text-2xl font-bold neon-text">Fuel & Expense Tracking</h1>
-        <p className="mt-1 text-sm text-zinc-400">Monitor fuel consumption and operational costs</p>
+        <p className="mt-1 text-sm text-[#64748B]">Monitor fuel consumption and operational costs</p>
       </div>
 
       <div className="mb-6 grid gap-4 sm:grid-cols-3">
-        <div className="glass neon-border rounded-lg p-4">
-          <p className="text-xs text-zinc-400">Total Fuel Used</p>
-          <p className="mt-2 text-2xl font-bold text-white flex items-center gap-2">
-            <Fuel className="h-5 w-5 text-[#00ffc8]" /> {totalFuel.toFixed(1)} L
+        <div className="bg-white border border-[#E2E8F0] shadow-card rounded-lg p-4">
+          <p className="text-xs text-[#64748B]">Total Fuel Used</p>
+          <p className="mt-2 text-2xl font-bold text-[#0F172A] flex items-center gap-2">
+            <Fuel className="h-5 w-5 text-[#2563EB]" /> {totalFuel.toFixed(1)} L
           </p>
         </div>
-        <div className="glass neon-border rounded-lg p-4">
-          <p className="text-xs text-zinc-400">Total Fuel Cost</p>
-          <p className="mt-2 text-2xl font-bold text-white">${totalFuelCost.toLocaleString()}</p>
+        <div className="bg-white border border-[#E2E8F0] shadow-card rounded-lg p-4">
+          <p className="text-xs text-[#64748B]">Total Fuel Cost</p>
+          <p className="mt-2 text-2xl font-bold text-[#0F172A]">${totalFuelCost.toLocaleString()}</p>
         </div>
-        <div className="glass neon-border rounded-lg p-4">
-          <p className="text-xs text-zinc-400">Avg. Efficiency</p>
-          <p className="mt-2 text-2xl font-bold text-white flex items-center gap-2">
-            <TrendingDown className="h-5 w-5 text-[#00ffc8]" /> {avgEfficiency} km/L
+        <div className="bg-white border border-[#E2E8F0] shadow-card rounded-lg p-4">
+          <p className="text-xs text-[#64748B]">Avg. Efficiency</p>
+          <p className="mt-2 text-2xl font-bold text-[#0F172A] flex items-center gap-2">
+            <TrendingDown className="h-5 w-5 text-[#2563EB]" /> {avgEfficiency} km/L
           </p>
         </div>
       </div>
 
-      <div className="glass neon-border rounded-xl overflow-hidden">
+      <div className="bg-white border border-[#E2E8F0] shadow-card rounded-xl overflow-hidden">
         <table className="w-full">
           <thead>
-            <tr className="border-b border-zinc-700/50 bg-zinc-900/30">
-              <th className="px-4 py-3 text-left text-sm font-medium text-zinc-400">Vehicle</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-zinc-400">Driver</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-zinc-400">Distance</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-zinc-400">Fuel Used</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-zinc-400">Fuel Cost</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-zinc-400">Efficiency</th>
-              <th className="px-4 py-3 text-left text-sm font-medium text-zinc-400">End Date</th>
+            <tr className="border-b border-[#E2E8F0]/50 bg-white/30">
+              <th className="px-4 py-3 text-left text-sm font-medium text-[#64748B]">Vehicle</th>
+              <th className="px-4 py-3 text-left text-sm font-medium text-[#64748B]">Driver</th>
+              <th className="px-4 py-3 text-left text-sm font-medium text-[#64748B]">Distance</th>
+              <th className="px-4 py-3 text-left text-sm font-medium text-[#64748B]">Fuel Used</th>
+              <th className="px-4 py-3 text-left text-sm font-medium text-[#64748B]">Fuel Cost</th>
+              <th className="px-4 py-3 text-left text-sm font-medium text-[#64748B]">Efficiency</th>
+              <th className="px-4 py-3 text-left text-sm font-medium text-[#64748B]">End Date</th>
             </tr>
           </thead>
           <tbody>
             {completedTrips.map((t) => {
               const efficiency = (t.fuelUsed && t.distance) ? (t.distance / t.fuelUsed).toFixed(2) : 0;
               return (
-                <tr key={t._id} className="border-b border-zinc-800/50 hover:bg-zinc-800/30">
-                  <td className="px-4 py-3 text-white">{(t.vehicleId as { name?: string })?.name ?? '-'}</td>
-                  <td className="px-4 py-3 text-zinc-300">{(t.driverId as { name?: string })?.name ?? '-'}</td>
-                  <td className="px-4 py-3 text-zinc-300">{t.distance} km</td>
-                  <td className="px-4 py-3 text-zinc-300">{t.fuelUsed ?? '-'} L</td>
-                  <td className="px-4 py-3 text-zinc-300">${t.cost ?? 0}</td>
-                  <td className="px-4 py-3 text-[#00ffc8]">{efficiency} km/L</td>
-                  <td className="px-4 py-3 text-zinc-400">{t.endTime ? new Date(t.endTime).toLocaleDateString() : '-'}</td>
+                <tr key={t._id} className="border-b border-zinc-800/50 hover:bg-[#F1F5F9]/30">
+                  <td className="px-4 py-3 text-[#0F172A]">{(t.vehicleId as { name?: string })?.name ?? '-'}</td>
+                  <td className="px-4 py-3 text-[#475569]">{(t.driverId as { name?: string })?.name ?? '-'}</td>
+                  <td className="px-4 py-3 text-[#475569]">{t.distance} km</td>
+                  <td className="px-4 py-3 text-[#475569]">{t.fuelUsed ?? '-'} L</td>
+                  <td className="px-4 py-3 text-[#475569]">${t.cost ?? 0}</td>
+                  <td className="px-4 py-3 text-[#2563EB]">{efficiency} km/L</td>
+                  <td className="px-4 py-3 text-[#64748B]">{t.endTime ? new Date(t.endTime).toLocaleDateString() : '-'}</td>
                 </tr>
               );
             })}
           </tbody>
         </table>
-        {completedTrips.length === 0 && <div className="py-12 text-center text-zinc-500">No fuel logs available</div>}
+        {completedTrips.length === 0 && <div className="py-12 text-center text-[#64748B]">No fuel logs available</div>}
       </div>
     </div>
   );

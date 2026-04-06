@@ -24,9 +24,9 @@ import { Permissions, can, ROLES, MANAGER_NAV, DISPATCHER_NAV, SAFETY_OFFICER_NA
 
 const COMMUNITY_NAV = [
   { href: '/dashboard/community', label: 'Community Dashboard' },
-  { href: '/dashboard/community/settings', label: 'Community Settings' },
-  { href: '/dashboard/community/invite', label: 'Invite Members' },
-  { href: '/dashboard/community/members', label: 'View Members' },
+  // { href: '/dashboard/community/settings', label: 'Community Settings' },
+  // { href: '/dashboard/community/invite', label: 'Invite Members' },
+  // { href: '/dashboard/community/members', label: 'View Members' },
 ];
 
 const iconByPath: Record<string, React.ComponentType<{ className?: string }>> = {
@@ -67,42 +67,44 @@ export function Sidebar() {
 
   const navItems = isManager
     ? [
-        ...MANAGER_NAV.map((item) => ({
-          href: item.href,
-          label: item.label,
-          icon: iconByPath[item.href] ?? LayoutDashboard,
-        })),
-        ...COMMUNITY_NAV.map((item) => ({
-          href: item.href,
-          label: item.label,
-          icon: iconByPath[item.href] ?? Users,
-        })),
-      ]
+      ...MANAGER_NAV.map((item) => ({
+        href: item.href,
+        label: item.label,
+        icon: iconByPath[item.href] ?? LayoutDashboard,
+      })),
+      ...COMMUNITY_NAV.map((item) => ({
+        href: item.href,
+        label: item.label,
+        icon: iconByPath[item.href] ?? Users,
+      })),
+    ]
     : isDispatcher
       ? DISPATCHER_NAV.map((item) => ({
+        href: item.href,
+        label: item.label,
+        icon: iconByPath[item.href] ?? LayoutDashboard,
+      }))
+      : isSafetyOfficer
+        ? SAFETY_OFFICER_NAV.map((item) => ({
           href: item.href,
           label: item.label,
           icon: iconByPath[item.href] ?? LayoutDashboard,
         }))
-      : isSafetyOfficer
-        ? SAFETY_OFFICER_NAV.map((item) => ({
-            href: item.href,
-            label: item.label,
-            icon: iconByPath[item.href] ?? LayoutDashboard,
-          }))
         : nav
-            .filter((item) => can(user?.role, item.allowed))
-            .map((item) => ({ href: item.href, label: item.label, icon: item.icon }));
+          .filter((item) => can(user?.role, item.allowed))
+          .map((item) => ({ href: item.href, label: item.label, icon: item.icon }));
 
   return (
-    <aside className="glass fixed left-0 top-0 z-40 flex h-screen w-56 flex-col border-r border-teal-200">
-      <div className="flex h-14 flex-col justify-center gap-0 border-b border-teal-200 px-4">
-        <span className="font-semibold neon-text">FleetFlow AI</span>
+    <aside className="fixed left-0 top-0 z-40 flex h-screen w-56 flex-col bg-white border-r border-[#E2E8F0] shadow-[1px_0_3px_rgba(15,23,42,0.03)]">
+      <div className="flex h-16 flex-col justify-center gap-0 border-b border-[#E2E8F0] px-5">
+        <span className="font-headline font-bold text-[#0F172A] text-lg tracking-tight">
+          FleetFlow<span className="text-[#2563EB]">AI</span>
+        </span>
         {user?.communityName && (
-          <span className="truncate text-xs text-zinc-600">{user.communityName}</span>
+          <span className="truncate text-xs text-[#64748B]">{user.communityName}</span>
         )}
       </div>
-      <nav className="flex-1 space-y-0.5 overflow-y-auto p-2">
+      <nav className="flex-1 space-y-0.5 overflow-y-auto p-3">
         {navItems.map((item) => {
           const Icon = item.icon;
           const active = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href));
@@ -110,13 +112,12 @@ export function Sidebar() {
             <Link
               key={item.href}
               href={item.href}
-              className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition ${
-                active
-                  ? 'bg-teal-100 text-teal-800'
-                  : 'text-zinc-600 hover:bg-slate-100 hover:text-zinc-900'
-              }`}
+              className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all ${active
+                  ? 'bg-[#F1F5F9] text-[#2563EB] border-l-[3px] border-[#2563EB] pl-[9px]'
+                  : 'text-[#64748B] hover:bg-[#F1F5F9] hover:text-[#0F172A]'
+                }`}
             >
-              <Icon className="h-5 w-5 shrink-0" />
+              <Icon className="h-[18px] w-[18px] shrink-0" />
               {item.label}
             </Link>
           );
@@ -124,19 +125,19 @@ export function Sidebar() {
         {!isManager && !isDispatcher && !isSafetyOfficer && (isFinancialAnalyst || can(user?.role, Permissions.NAV.export)) && (
           <Link
             href="/dashboard/export"
-            className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-zinc-600 hover:bg-slate-100 hover:text-zinc-900"
+            className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-[#64748B] hover:bg-[#F1F5F9] hover:text-[#0F172A] transition-all"
           >
-            <FileDown className="h-5 w-5" />
+            <FileDown className="h-[18px] w-[18px]" />
             Export
           </Link>
         )}
       </nav>
-      <div className="border-t border-teal-200 p-3">
-        <p className="truncate text-xs text-zinc-600">{user?.email}</p>
-        <p className="text-xs font-medium text-teal-700">{user?.role}</p>
+      <div className="border-t border-[#E2E8F0] p-4">
+        <p className="truncate text-xs text-[#64748B]">{user?.email}</p>
+        <p className="text-xs font-semibold text-[#0F172A] mt-0.5">{user?.role}</p>
         <button
           onClick={logout}
-          className="mt-2 flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm text-zinc-600 hover:bg-red-50 hover:text-red-600"
+          className="mt-3 flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-[#64748B] hover:bg-[#FEF2F2] hover:text-[#EF4444] transition-all"
         >
           <LogOut className="h-4 w-4" />
           Logout
