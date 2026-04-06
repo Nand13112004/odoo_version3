@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: fleetflow-ai-backend
+    env: node
+    region: singapore # Change this if you prefer a different region
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      # The following variables will be prompted for in the Render Dashboard:
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_EXPIRE
+        value: 7d
+      - key: CORS_ORIGIN
+        sync: false # You will set this to your Vercel URL
+      - key: FRONTEND_URL
+        sync: false # You will set this to your Vercel URL
+      - key: GEMINI_API_KEY
+        sync: false
