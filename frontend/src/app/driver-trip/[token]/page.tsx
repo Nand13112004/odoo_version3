@@ -172,7 +172,7 @@ export default function DriverTripPage({ params }: { params: { token: string } }
           </div>
         )}
 
-        {errorMsg && pageState !== 'error' && (
+        {errorMsg && (
           <p className="rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-300">{errorMsg}</p>
         )}
 
@@ -262,7 +262,7 @@ export default function DriverTripPage({ params }: { params: { token: string } }
         )}
 
         {/* Action Buttons */}
-        {trip && pageState !== 'accepted' && pageState !== 'rejected' && pageState !== 'expired' && pageState !== 'error' && (
+        {trip && pageState !== 'accepted' && pageState !== 'rejected' && (
           <div className="grid grid-cols-2 gap-3">
             <button
               onClick={handleReject}

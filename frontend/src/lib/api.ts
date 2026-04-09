@@ -196,8 +196,8 @@ export interface FuelLog {
 
 export interface Trip {
   _id: string;
-  vehicleId: Vehicle | { _id: string; name?: string; licensePlate?: string; status?: string };
-  driverId: Driver | { _id: string; name?: string; status?: string };
+  vehicleId: string | Vehicle | { _id: string; name?: string; licensePlate?: string; status?: string };
+  driverId: string | Driver | { _id: string; name?: string; status?: string };
   cargoWeight: number;
   distance: number;
   revenue: number;

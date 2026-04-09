@@ -84,8 +84,8 @@ export default function TripDispatcherPage() {
     try {
       const res = await tripsApi.dispatch(id);
       // Extract share link from response
-      if (res.shareLink) {
-        setShareLink({ tripId: id, url: res.shareLink });
+      if (res.data?.shareLink) {
+        setShareLink({ tripId: id, url: res.data.shareLink });
         setCopied(false);
       }
       load();

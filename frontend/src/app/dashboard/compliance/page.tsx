@@ -107,7 +107,7 @@ export default function DriverCompliancePage() {
           </thead>
           <tbody>
             {list.map((d) => {
-              const expired = d.licenseExpiry && new Date(d.licenseExpiry) < new Date();
+              const expired = Boolean(d.licenseExpiry && new Date(d.licenseExpiry) < new Date());
               const canSetDuty = !expired || (d.status !== 'On Duty' && d.status !== 'On Trip');
               return (
                 <tr key={d._id} className="border-b border-zinc-800/50 hover:bg-[#F1F5F9]/30">

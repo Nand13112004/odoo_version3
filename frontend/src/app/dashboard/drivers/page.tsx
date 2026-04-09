@@ -41,7 +41,7 @@ export default function DriversPage() {
       const trips = Array.isArray(tripsRes.data) ? tripsRes.data : [];
       const byDriver: Record<string, { total: number; completed: number }> = {};
       trips.forEach((t) => {
-        const id = typeof t.driverId === 'object' && t.driverId?._id ? t.driverId._id : (t.driverId as string);
+        const id = (typeof t.driverId === 'object' && t.driverId && '_id' in t.driverId) ? t.driverId._id : (t.driverId as unknown as string);
         if (!byDriver[id]) byDriver[id] = { total: 0, completed: 0 };
         byDriver[id].total += 1;
         if (t.status === 'Completed') byDriver[id].completed += 1;

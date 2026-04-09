@@ -1,13 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { auth, invites } from '@/lib/api';
 import type { User } from '@/lib/api';
 import Link from 'next/link';
 
-export default function RegisterPage() {
+function RegisterForm() {
   const searchParams = useSearchParams();
   const inviteToken = searchParams?.get('invite') || undefined;
   const { setUser } = useAuth();
@@ -182,5 +182,20 @@ export default function RegisterPage() {
         </div>
       </main>
     </div>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="relative flex min-h-screen items-center justify-center">
+          <div className="fixed inset-0 z-0 mesh-gradient" />
+          <div className="h-10 w-10 animate-spin rounded-full border-2 border-[#2563EB] border-t-transparent" />
+        </div>
+      }
+    >
+      <RegisterForm />
+    </Suspense>
   );
 }

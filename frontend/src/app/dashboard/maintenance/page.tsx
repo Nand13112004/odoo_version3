@@ -96,7 +96,7 @@ export default function MaintenancePage() {
               const isEditing = editingId === m._id;
               return (
               <tr key={m._id} className="border-b border-[#E2E8F0] hover:bg-[#F1F5F9]">
-                <td className="px-4 py-3 text-[#0F172A]">{(m.vehicleId as { name?: string })?.name ?? m.vehicleId}</td>
+                <td className="px-4 py-3 text-[#0F172A]">{(m.vehicleId as { name?: string })?.name ?? (typeof m.vehicleId === 'string' ? m.vehicleId : 'Unknown')}</td>
                 {isEditing ? (
                   <>
                     <td className="px-4 py-3">

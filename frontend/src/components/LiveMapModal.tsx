@@ -82,7 +82,7 @@ export function LiveMapModal({ tripId, onClose }: Props) {
 
       // Pickup marker (green)
       if (locationData.pickupLocation?.lat != null) {
-        const icon = L.divIcon({ className: '', html: '<div style="background:#22c55e;width:14px;height:14px;border-radius:50%;border:2px solid white;box-shadow:0 0 6px #22c55e80"></div>', iconSize: [14, 14] });
+        const icon = L.divIcon({ className: '', html: '<div style="background:#22c55e;width:14px;height:14px;border-radius:50%;border:2px solid white;box-shadow:0 0 6px #22c55e80"></div>', iconSize: [14, 14] }) as any;
         L.marker([locationData.pickupLocation.lat, locationData.pickupLocation.lng!], { icon })
           .addTo(map)
           .bindPopup(`<b>Pickup</b><br/>${locationData.pickupLocation.address || ''}`);
@@ -90,7 +90,7 @@ export function LiveMapModal({ tripId, onClose }: Props) {
 
       // Drop marker (red)
       if (locationData.dropLocation?.lat != null) {
-        const icon = L.divIcon({ className: '', html: '<div style="background:#ef4444;width:14px;height:14px;border-radius:50%;border:2px solid white;box-shadow:0 0 6px #ef444480"></div>', iconSize: [14, 14] });
+        const icon = L.divIcon({ className: '', html: '<div style="background:#ef4444;width:14px;height:14px;border-radius:50%;border:2px solid white;box-shadow:0 0 6px #ef444480"></div>', iconSize: [14, 14] }) as any;
         L.marker([locationData.dropLocation.lat!, locationData.dropLocation.lng!], { icon })
           .addTo(map)
           .bindPopup(`<b>Drop-off</b><br/>${locationData.dropLocation.address || ''}`);
@@ -106,7 +106,7 @@ export function LiveMapModal({ tripId, onClose }: Props) {
                  </div>`,
           iconSize: [28, 28],
           iconAnchor: [14, 14],
-        });
+        }) as any;
         const marker = L.marker([locationData.lastKnownLat!, locationData.lastKnownLng!], { icon: driverIcon })
           .addTo(map)
           .bindPopup('<b>Driver (Live)</b>');

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { vehicles as vehiclesApi, trips as tripsApi, type Vehicle, type Trip } from '@/lib/api';
 import dynamic from 'next/dynamic';
 
-const MapboxMap = dynamic(() => import('@/components/MapboxMap'), { ssr: false });
+const LeafletMap = dynamic(() => import('@/components/LeafletMap'), { ssr: false });
 
 export default function LiveMapPage() {
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
@@ -26,14 +26,14 @@ export default function LiveMapPage() {
   return (
     <div className="p-8">
       <h1 className="text-3xl font-bold neon-text">Live Map</h1>
-      <p className="mt-1 text-[#64748B]">Fleet locations (Mapbox)</p>
+      <p className="mt-1 text-[#64748B]">Fleet locations (Leaflet — no API key required)</p>
       <div className="mt-6 h-[600px] overflow-hidden rounded-xl bg-white border border-[#E2E8F0] shadow-card">
         {loading ? (
           <div className="flex h-full items-center justify-center">
             <div className="h-10 w-10 animate-spin rounded-full border-2 border-[#2563EB] border-t-transparent" />
           </div>
         ) : (
-          <MapboxMap vehicles={vehicles} />
+          <LeafletMap vehicles={vehicles} />
         )}
       </div>
       <div className="mt-4 flex flex-wrap gap-2">
