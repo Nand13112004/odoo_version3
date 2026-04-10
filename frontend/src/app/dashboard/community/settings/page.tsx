@@ -40,7 +40,7 @@ export default function CommunitySettingsPage() {
   if (user?.role !== ROLES.Manager) return null;
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-6 md:p-8">
       <h1 className="text-3xl font-bold neon-text">Community Settings</h1>
       <p className="mt-1 text-[#64748B]">Update your community name</p>
 

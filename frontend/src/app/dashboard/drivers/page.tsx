@@ -104,7 +104,7 @@ export default function DriversPage() {
 
   if (loading) {
     return (
-      <div className="p-8">
+      <div className="p-4 sm:p-6 md:p-8">
         <div className="h-64 animate-pulse rounded-xl bg-[#E2E8F0]" />
       </div>
     );
@@ -112,7 +112,7 @@ export default function DriversPage() {
 
   if (!canView) {
     return (
-      <div className="p-8">
+      <div className="p-4 sm:p-6 md:p-8">
         <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-6 text-center text-red-400">
           <p className="font-medium">Access Denied</p>
           <p className="mt-1 text-sm">You do not have permission to view drivers.</p>
@@ -122,7 +122,7 @@ export default function DriversPage() {
   }
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-6 md:p-8">
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold neon-text">{isSafetyOfficer ? 'Driver Safety Profiles' : 'Driver Management'}</h1>
@@ -139,7 +139,7 @@ export default function DriversPage() {
       </div>
 
       {showForm && canAdd && (
-        <form onSubmit={handleAddDriver} className="bg-white border border-[#E2E8F0] shadow-card mb-6 space-y-4 rounded-xl p-5">
+        <form onSubmit={handleAddDriver} className="bg-white border border-[#E2E8F0] shadow-card mb-6 space-y-4 rounded-xl p-4 sm:p-5">
           <div className="grid gap-4 sm:grid-cols-2">
             <input
               required

@@ -39,14 +39,14 @@ export default function CommunityPage() {
   }
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-6 md:p-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold neon-text">Community Dashboard</h1>
         <p className="mt-1 text-[#64748B]">Overview of your community</p>
       </div>
 
       <div className="mb-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="bg-white border border-[#E2E8F0] shadow-card rounded-xl p-5">
+        <div className="bg-white border border-[#E2E8F0] shadow-card rounded-xl p-4 sm:p-5">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-[#64748B]">Total Members</p>
@@ -55,7 +55,7 @@ export default function CommunityPage() {
             <Users className="h-10 w-10 text-[#2563EB]" />
           </div>
         </div>
-        <div className="bg-white border border-[#E2E8F0] shadow-card rounded-xl p-5">
+        <div className="bg-white border border-[#E2E8F0] shadow-card rounded-xl p-4 sm:p-5">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-[#64748B]">Total Vehicles</p>
@@ -64,7 +64,7 @@ export default function CommunityPage() {
             <Truck className="h-10 w-10 text-[#2563EB]" />
           </div>
         </div>
-        <div className="bg-white border border-[#E2E8F0] shadow-card rounded-xl p-5">
+        <div className="bg-white border border-[#E2E8F0] shadow-card rounded-xl p-4 sm:p-5">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-[#64748B]">Total Drivers</p>
@@ -76,7 +76,7 @@ export default function CommunityPage() {
       </div>
 
       {dashboard?.roleCounts && Object.keys(dashboard.roleCounts).length > 0 && (
-        <div className="bg-white border border-[#E2E8F0] shadow-card mb-8 rounded-xl p-5">
+        <div className="bg-white border border-[#E2E8F0] shadow-card mb-8 rounded-xl p-4 sm:p-5">
           <h2 className="mb-4 text-lg font-semibold text-[#0F172A]">Role Distribution</h2>
           <div className="flex flex-wrap gap-3">
             {Object.entries(dashboard.roleCounts).map(([role, count]) => (

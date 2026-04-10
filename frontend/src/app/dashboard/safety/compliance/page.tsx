@@ -34,7 +34,7 @@ export default function SafetyCompliancePage() {
 
   if (loading) {
     return (
-      <div className="p-8">
+      <div className="p-4 sm:p-6 md:p-8">
         <div className="h-64 animate-pulse rounded-xl bg-[#E2E8F0]" />
       </div>
     );
@@ -43,7 +43,7 @@ export default function SafetyCompliancePage() {
   if (user?.role !== ROLES.SafetyOfficer) return null;
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-6 md:p-8">
       <div className="mb-6">
         <h1 className="text-3xl font-bold neon-text">Compliance Monitoring</h1>
         <p className="mt-1 text-[#64748B]">Track license expiry, flag expired drivers. Expired drivers are blocked from dispatcher assignment.</p>

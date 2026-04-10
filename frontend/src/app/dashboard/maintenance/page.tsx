@@ -60,14 +60,14 @@ export default function MaintenancePage() {
 
   if (loading) {
     return (
-      <div className="p-8">
+      <div className="p-4 sm:p-6 md:p-8">
         <div className="h-64 animate-pulse rounded-xl bg-[#E2E8F0]" />
       </div>
     );
   }
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-6 md:p-8">
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold neon-text">Maintenance</h1>
@@ -142,7 +142,7 @@ export default function MaintenancePage() {
 
       {showForm && canAdd && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-          <div className="bg-white border border-[#E2E8F0] shadow-card w-full max-w-md rounded-xl p-6">
+          <div className="bg-white border border-[#E2E8F0] shadow-card w-full max-w-md rounded-xl p-4 sm:p-6">
             <h3 className="font-semibold text-[#0F172A]">Add Maintenance</h3>
             <form onSubmit={handleSubmit} className="mt-4 space-y-3">
               <div>
@@ -156,7 +156,7 @@ export default function MaintenancePage() {
                 <label className="block text-sm text-[#64748B]">Description</label>
                 <input value={form.description} onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))} className="mt-1 w-full rounded-lg border border-[#E2E8F0] bg-white px-3 py-2 text-[#0F172A]" required />
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-sm text-[#64748B]">Cost ($)</label>
                   <input type="number" min={0} value={form.cost} onChange={(e) => setForm((f) => ({ ...f, cost: e.target.value }))} className="mt-1 w-full rounded-lg border border-[#E2E8F0] bg-white px-3 py-2 text-[#0F172A]" required />

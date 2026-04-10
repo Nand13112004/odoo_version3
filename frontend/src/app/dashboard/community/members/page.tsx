@@ -37,7 +37,7 @@ export default function CommunityMembersPage() {
   if (user?.role !== ROLES.Manager) return null;
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-6 md:p-8">
       <h1 className="text-3xl font-bold neon-text">Community Members</h1>
       <p className="mt-1 text-[#64748B]">View and manage your community members</p>
 

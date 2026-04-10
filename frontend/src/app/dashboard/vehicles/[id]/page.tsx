@@ -52,7 +52,7 @@ export default function VehicleDetailPage() {
 
   if (loading || !vehicle) {
     return (
-      <div className="p-8">
+      <div className="p-4 sm:p-6 md:p-8">
         <div className="h-64 animate-pulse rounded-xl bg-[#E2E8F0]" />
       </div>
     );
@@ -100,11 +100,11 @@ export default function VehicleDetailPage() {
   };
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-6 md:p-8">
       <Link href="/dashboard/vehicles" className="mb-6 inline-flex items-center gap-2 text-sm text-[#64748B] hover:text-[#2563EB] transition-colors">
         <ArrowLeft className="h-4 w-4" /> Back to registry
       </Link>
-      <div className="bg-white border border-[#E2E8F0] shadow-card rounded-xl p-6">
+      <div className="bg-white border border-[#E2E8F0] shadow-card rounded-xl p-4 sm:p-6">
         <div className="flex items-start justify-between">
           <div>
             <h1 className="text-2xl font-bold text-[#0F172A] font-headline">{vehicle.name}</h1>
@@ -193,7 +193,7 @@ export default function VehicleDetailPage() {
 
       {showEditModal && canEdit && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-          <div className="bg-white border border-[#E2E8F0] shadow-[0_20px_50px_rgba(15,23,42,0.12)] w-full max-w-md rounded-xl p-6">
+          <div className="bg-white border border-[#E2E8F0] shadow-[0_20px_50px_rgba(15,23,42,0.12)] w-full max-w-md rounded-xl p-4 sm:p-6">
             <h3 className="font-bold text-[#0F172A] font-headline">Edit Vehicle</h3>
             <form onSubmit={handleEditSave} className="mt-4 space-y-3">
               <div>
@@ -204,7 +204,7 @@ export default function VehicleDetailPage() {
                 <label className="block text-xs font-bold uppercase tracking-widest text-[#64748B]">License Plate</label>
                 <input value={editForm.licensePlate} onChange={(e) => setEditForm((f) => ({ ...f, licensePlate: e.target.value }))} className="mt-1 w-full rounded-lg border border-[#E2E8F0] bg-white px-3 py-2 text-[#0F172A] focus:border-[#2563EB] focus:outline-none focus:ring-4 focus:ring-[#2563EB]/5" required />
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-bold uppercase tracking-widest text-[#64748B]">Capacity (kg)</label>
                   <input type="number" min={0} value={editForm.capacity} onChange={(e) => setEditForm((f) => ({ ...f, capacity: Number(e.target.value) }))} className="mt-1 w-full rounded-lg border border-[#E2E8F0] bg-white px-3 py-2 text-[#0F172A] focus:border-[#2563EB] focus:outline-none focus:ring-4 focus:ring-[#2563EB]/5" />

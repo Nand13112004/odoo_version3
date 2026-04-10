@@ -57,7 +57,7 @@ const nav = [
   { href: '/dashboard/ai-chat', label: 'AI Assistant', icon: MessageSquare, allowed: Permissions.NAV.aiChat },
 ];
 
-export function Sidebar() {
+export function Sidebar({ isOpen, close }: { isOpen?: boolean; close?: () => void }) {
   const pathname = usePathname();
   const { user, logout } = useAuth();
   const isManager = user?.role === ROLES.Manager;
@@ -95,8 +95,17 @@ export function Sidebar() {
           .map((item) => ({ href: item.href, label: item.label, icon: item.icon }));
 
   return (
-    <aside className="fixed left-0 top-0 z-40 flex h-screen w-56 flex-col bg-white border-r border-[#E2E8F0] shadow-[1px_0_3px_rgba(15,23,42,0.03)]">
-      <div className="flex h-16 flex-col justify-center gap-0 border-b border-[#E2E8F0] px-5">
+    <>
+      {/* Mobile Backdrop */}
+      {isOpen && (
+        <div 
+          className="md:hidden fixed inset-0 z-30 bg-black/50 backdrop-blur-sm transition-opacity" 
+          onClick={close} 
+        />
+      )}
+      
+      <aside className={`fixed left-0 top-0 z-40 flex h-screen w-56 flex-col bg-white border-r border-[#E2E8F0] shadow-[1px_0_3px_rgba(15,23,42,0.03)] transition-transform duration-300 md:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div className="flex h-16 flex-col justify-center gap-0 border-b border-[#E2E8F0] px-5">
         <span className="font-headline font-bold text-[#0F172A] text-lg tracking-tight">
           FleetFlow<span className="text-[#2563EB]">AI</span>
         </span>
@@ -143,6 +152,7 @@ export function Sidebar() {
           Logout
         </button>
       </div>
-    </aside>
+      </aside>
+    </>
   );
 }

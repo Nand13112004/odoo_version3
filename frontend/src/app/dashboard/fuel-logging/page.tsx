@@ -59,14 +59,14 @@ export default function FuelLoggingPage() {
 
   if (loading) {
     return (
-      <div className="p-8">
+      <div className="p-4 sm:p-6 md:p-8">
         <div className="h-64 animate-pulse rounded-xl bg-[#E2E8F0]" />
       </div>
     );
   }
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-6 md:p-8">
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold neon-text">Fuel Logging</h1>
@@ -80,7 +80,7 @@ export default function FuelLoggingPage() {
       </div>
 
       {showForm && canAdd && (
-        <form onSubmit={handleSubmit} className="mb-6 space-y-3 rounded-xl bg-white border border-[#E2E8F0] shadow-card p-5">
+        <form onSubmit={handleSubmit} className="mb-6 space-y-3 rounded-xl bg-white border border-[#E2E8F0] shadow-card p-4 sm:p-5">
           <h2 className="font-semibold text-[#0F172A]">New fuel log</h2>
           <div className="grid gap-3 sm:grid-cols-3">
             <div>

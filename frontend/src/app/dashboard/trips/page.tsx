@@ -132,14 +132,14 @@ export default function TripDispatcherPage() {
 
   if (loading) {
     return (
-      <div className="p-8">
+      <div className="p-4 sm:p-6 md:p-8">
         <div className="h-64 animate-pulse rounded-xl bg-[#E2E8F0]" />
       </div>
     );
   }
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-6 md:p-8">
       <h1 className="text-3xl font-bold neon-text">Trip Dispatcher</h1>
       <p className="mt-1 text-[#64748B]">Create and dispatch trips to drivers</p>
       {error && <p className="mt-4 rounded-lg bg-red-50 border border-red-200 px-4 py-2 text-sm text-red-600">{error}</p>}
@@ -166,7 +166,7 @@ export default function TripDispatcherPage() {
 
       <div className="mt-6 grid gap-6 lg:grid-cols-2">
         {can(user?.role, Permissions.ACTIONS.assignTrip) && (
-          <div className="bg-white border border-[#E2E8F0] shadow-card rounded-xl p-5">
+          <div className="bg-white border border-[#E2E8F0] shadow-card rounded-xl p-4 sm:p-5">
             <h2 className="mb-4 font-semibold text-[#0F172A]">New Trip</h2>
             <form onSubmit={handleCreate} className="space-y-3">
               {/* Vehicle */}
@@ -205,7 +205,7 @@ export default function TripDispatcherPage() {
                 <input type="text" placeholder="e.g. Pune Distribution Centre" value={form.dropAddress} onChange={(e) => setForm((f) => ({ ...f, dropAddress: e.target.value }))} className={inputCls} />
               </div>
               {/* Cargo, Distance, Revenue */}
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
                   <label className="block text-sm text-[#64748B]">Cargo (kg)</label>
                   <input type="number" min={0} value={form.cargoWeight} onChange={(e) => setForm((f) => ({ ...f, cargoWeight: e.target.value }))} className={inputCls} required />
@@ -238,7 +238,7 @@ export default function TripDispatcherPage() {
         )}
 
         {/* Active / Draft Trips list */}
-        <div className="bg-white border border-[#E2E8F0] shadow-card rounded-xl p-5">
+        <div className="bg-white border border-[#E2E8F0] shadow-card rounded-xl p-4 sm:p-5">
           <h2 className="mb-4 font-semibold text-[#0F172A]">Active / Draft Trips</h2>
           <ul className="space-y-3">
             {draftOrDispatched.map((t) => {
@@ -297,8 +297,8 @@ export default function TripDispatcherPage() {
 
       {/* Complete Modal */}
       {completeModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-          <div className="bg-white border border-[#E2E8F0] shadow-card w-full max-w-sm rounded-xl p-6">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+          <div className="bg-white border border-[#E2E8F0] shadow-card w-full max-w-sm rounded-xl p-5 sm:p-6">
             <h3 className="font-semibold text-[#0F172A]">Complete Trip</h3>
             <div className="mt-4 space-y-3">
               <div>

@@ -31,7 +31,7 @@ export default function ExportPage() {
   if (!can(user?.role, Permissions.ACTIONS.exportReports)) return null;
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-6 md:p-8">
       <h1 className="text-3xl font-bold neon-text">Export</h1>
       <p className="mt-1 text-[#64748B]">CSV and PDF reports</p>
       <div className="mt-8 grid gap-4 sm:grid-cols-3">

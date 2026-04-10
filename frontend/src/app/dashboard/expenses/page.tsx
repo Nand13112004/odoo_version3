@@ -63,7 +63,7 @@ export default function ExpensesPage() {
 
   if (loading) {
     return (
-      <div className="p-8">
+      <div className="p-4 sm:p-6 md:p-8">
         <div className="h-64 animate-pulse rounded-xl bg-[#F1F5F9]" />
       </div>
     );
@@ -75,7 +75,7 @@ export default function ExpensesPage() {
   const totalMaintCost = maintenances.reduce((s, m) => s + (m.cost || 0), 0);
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-6 md:p-8">
       <div className="mb-6">
         <h1 className="text-3xl font-bold neon-text">Expenses</h1>
         <p className="mt-1 text-[#64748B]">View all fuel logs and maintenance costs. Edit entries when permitted.</p>

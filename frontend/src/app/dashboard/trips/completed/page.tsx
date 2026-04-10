@@ -20,7 +20,7 @@ export default function CompletedTripsPage() {
 
   if (loading) {
     return (
-      <div className="p-8">
+      <div className="p-4 sm:p-6 md:p-8">
         <div className="h-64 animate-pulse rounded-xl bg-[#F1F5F9]" />
       </div>
     );
@@ -28,7 +28,7 @@ export default function CompletedTripsPage() {
 
   if (!canView) {
     return (
-      <div className="p-8">
+      <div className="p-4 sm:p-6 md:p-8">
         <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-6 text-center text-red-400">
           <p className="font-medium">Access Denied</p>
           <p className="mt-1 text-sm">You do not have permission to view completed trips.</p>
@@ -38,7 +38,7 @@ export default function CompletedTripsPage() {
   }
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-6 md:p-8">
       <h1 className="text-3xl font-bold neon-text">Completed Trips</h1>
       <p className="mt-1 text-[#64748B]">History of completed deliveries</p>
       <div className="mt-6 bg-white border border-[#E2E8F0] shadow-card rounded-xl overflow-hidden">

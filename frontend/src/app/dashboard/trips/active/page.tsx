@@ -89,14 +89,14 @@ export default function ActiveTripsPage() {
 
   if (loading) {
     return (
-      <div className="p-8">
+      <div className="p-4 sm:p-6 md:p-8">
         <div className="h-64 animate-pulse rounded-xl bg-[#E2E8F0]" />
       </div>
     );
   }
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-6 md:p-8">
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold neon-text">Active Trips</h1>
@@ -213,7 +213,7 @@ export default function ActiveTripsPage() {
       {/* Complete Trip Modal */}
       {completeModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-          <div className="bg-white border border-[#E2E8F0] shadow-card w-full max-w-sm rounded-xl p-6">
+          <div className="bg-white border border-[#E2E8F0] shadow-card w-full max-w-sm rounded-xl p-4 sm:p-6">
             <h3 className="font-semibold text-[#0F172A]">Complete Trip</h3>
             <p className="mt-1 text-sm text-[#64748B]">Enter final odometer and fuel details</p>
             <div className="mt-4 space-y-3">

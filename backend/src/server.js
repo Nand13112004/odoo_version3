@@ -22,7 +22,7 @@ const driverTripRoutes = require('./routes/driverTrip');
 const app = express();
 const server = http.createServer(app);
 
-const corsOrigin = process.env.CORS_ORIGIN || 'http://localhost:3000,http://localhost:3001';
+const corsOrigin = process.env.CORS_ORIGIN || 'http://localhost:3000,http://localhost:3001' || "https://fleetflow-silk-ten.vercel.app";
 const io = new Server(server, {
   cors: { origin: corsOrigin.split(',').map(s => s.trim()), methods: ['GET', 'POST'] },
 });

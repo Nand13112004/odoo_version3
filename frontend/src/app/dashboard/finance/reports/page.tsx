@@ -44,7 +44,7 @@ export default function FinancialReportsPage() {
 
   if (loading) {
     return (
-      <div className="p-8">
+      <div className="p-4 sm:p-6 md:p-8">
         <div className="h-64 animate-pulse rounded-xl bg-[#E2E8F0]" />
       </div>
     );
@@ -62,7 +62,7 @@ export default function FinancialReportsPage() {
   });
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-6 md:p-8">
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold neon-text">Financial Reports</h1>

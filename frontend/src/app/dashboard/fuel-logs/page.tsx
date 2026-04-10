@@ -28,7 +28,7 @@ export default function FuelLogsPage() {
 
   if (loading) {
     return (
-      <div className="p-8">
+      <div className="p-4 sm:p-6 md:p-8">
         <div className="h-64 animate-pulse rounded-xl bg-[#F1F5F9]" />
       </div>
     );
@@ -36,7 +36,7 @@ export default function FuelLogsPage() {
 
   if (!canView) {
     return (
-      <div className="p-8">
+      <div className="p-4 sm:p-6 md:p-8">
         <div className="rounded-lg border border-red-500/30 bg-red-500/10 p-6 text-center text-red-400">
           <p className="font-medium">Access Denied</p>
           <p className="mt-1 text-sm">You do not have permission to view fuel & expense logs.</p>
@@ -50,7 +50,7 @@ export default function FuelLogsPage() {
   const avgEfficiency = completedTrips.length > 0 ? (completedTrips.reduce((sum, t) => sum + (t.distance || 0), 0) / totalFuel).toFixed(2) : 0;
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-6 md:p-8">
       <div className="mb-6">
         <h1 className="text-2xl font-bold neon-text">Fuel & Expense Tracking</h1>
         <p className="mt-1 text-sm text-[#64748B]">Monitor fuel consumption and operational costs</p>

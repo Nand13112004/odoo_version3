@@ -46,7 +46,7 @@ export default function VehiclesPage() {
   };
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-6 md:p-8">
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold neon-text">Vehicle Registry</h1>
@@ -62,7 +62,7 @@ export default function VehiclesPage() {
       </div>
 
       {showCreate && (
-        <form onSubmit={create} className="bg-white border border-[#E2E8F0] shadow-card mb-6 space-y-4 rounded-xl p-5">
+        <form onSubmit={create} className="bg-white border border-[#E2E8F0] shadow-card mb-6 space-y-4 rounded-xl p-4 sm:p-5">
           <div className="grid gap-4 sm:grid-cols-2">
             <input required placeholder="Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="rounded-lg border border-[#E2E8F0] bg-white px-4 py-2.5 text-[#0F172A] placeholder-[#64748B] focus:border-[#2563EB] focus:outline-none focus:ring-1 focus:ring-[#2563EB]" />
             <input required placeholder="License Plate" value={form.licensePlate} onChange={(e) => setForm({ ...form, licensePlate: e.target.value })} className="rounded-lg border border-[#E2E8F0] bg-white px-4 py-2.5 text-[#0F172A] placeholder-[#64748B] focus:border-[#2563EB] focus:outline-none focus:ring-1 focus:ring-[#2563EB]" />

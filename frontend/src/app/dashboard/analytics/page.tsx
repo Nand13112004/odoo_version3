@@ -40,14 +40,14 @@ export default function AnalyticsPage() {
 
   if (loading) {
     return (
-      <div className="p-8">
+      <div className="p-4 sm:p-6 md:p-8">
         <div className="h-96 animate-pulse rounded-xl bg-[#E2E8F0]" />
       </div>
     );
   }
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-6 md:p-8">
       <div className="mb-6 flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold neon-text">Operational Analytics</h1>
@@ -65,7 +65,7 @@ export default function AnalyticsPage() {
         )}
       </div>
       <div className="mt-8 grid gap-6 lg:grid-cols-2">
-        <div className="bg-white border border-[#E2E8F0] shadow-card rounded-xl p-5">
+        <div className="bg-white border border-[#E2E8F0] shadow-card rounded-xl p-4 sm:p-5">
           <h2 className="mb-4 font-semibold text-[#0F172A]">Revenue vs Expense by Vehicle</h2>
           <div className="h-72">
             {charts?.revenueVsExpense?.length ? (
@@ -81,7 +81,7 @@ export default function AnalyticsPage() {
             ) : <div className="flex h-full items-center justify-center text-[#64748B]">No data</div>}
           </div>
         </div>
-        <div className="bg-white border border-[#E2E8F0] shadow-card rounded-xl p-5">
+        <div className="bg-white border border-[#E2E8F0] shadow-card rounded-xl p-4 sm:p-5">
           <h2 className="mb-4 font-semibold text-[#0F172A]">Fuel Cost Trend</h2>
           <div className="h-72">
             {charts?.fuelTrend?.length ? (
@@ -96,7 +96,7 @@ export default function AnalyticsPage() {
             ) : <div className="flex h-full items-center justify-center text-[#64748B]">No data</div>}
           </div>
         </div>
-        <div className="bg-white border border-[#E2E8F0] shadow-card rounded-xl p-5">
+        <div className="bg-white border border-[#E2E8F0] shadow-card rounded-xl p-4 sm:p-5">
           <h2 className="mb-4 font-semibold text-[#0F172A]">Fleet Utilization</h2>
           <div className="h-72">
             {charts?.fleetUtilization?.length ? (
@@ -111,7 +111,7 @@ export default function AnalyticsPage() {
             ) : <div className="flex h-full items-center justify-center text-[#64748B]">No data</div>}
           </div>
         </div>
-        <div className="bg-white border border-[#E2E8F0] shadow-card rounded-xl p-5">
+        <div className="bg-white border border-[#E2E8F0] shadow-card rounded-xl p-4 sm:p-5">
           <h2 className="mb-4 font-semibold text-[#0F172A]">ROI Comparison</h2>
           <div className="h-72">
             {charts?.roiComparison?.length ? (

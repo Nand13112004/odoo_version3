@@ -105,7 +105,7 @@ export default function DashboardPage() {
   }, []);
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-6 md:p-8">
       <div className="mb-8">
         {user?.communityName && (
           <p className="text-sm text-[#64748B] font-medium">{user.communityName}</p>

@@ -1,10 +1,11 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { Sidebar } from '@/components/Sidebar';
 import { ROLES } from '@/lib/permissions';
+import { Menu } from 'lucide-react';
 
 /** Manager-only routes: only user.role === 'Manager' may access */
 const MANAGER_ONLY_PATHS = ['/dashboard/compliance', '/dashboard/expenses', '/dashboard/community'];
@@ -36,6 +37,12 @@ export default function DashboardLayout({
   const { user, loading } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
+
+  // Close sidebar on route change for mobile
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [pathname]);
 
   useEffect(() => {
     if (loading) return;
@@ -75,8 +82,24 @@ export default function DashboardLayout({
 
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
-      <Sidebar />
-      <main className="pl-56 min-h-screen">{children}</main>
+      {/* Mobile Top Header */}
+      <div className="md:hidden sticky top-0 z-30 flex items-center justify-between bg-white border-b border-[#E2E8F0] px-4 py-3 shadow-sm">
+        <span className="font-headline font-bold text-[#0F172A] text-lg tracking-tight">
+          FleetFlow<span className="text-[#2563EB]">AI</span>
+        </span>
+        <button 
+          onClick={() => setSidebarOpen(true)} 
+          className="p-1 -mr-1 rounded-lg text-[#64748B] hover:bg-[#F1F5F9] transition-colors"
+        >
+          <Menu className="w-6 h-6" />
+        </button>
+      </div>
+
+      {/* Main Layout containing Sidebar and Content */}
+      <div className="flex">
+        <Sidebar isOpen={isSidebarOpen} close={() => setSidebarOpen(false)} />
+        <main className="w-full min-h-screen md:pl-56">{children}</main>
+      </div>
     </div>
   );
 }

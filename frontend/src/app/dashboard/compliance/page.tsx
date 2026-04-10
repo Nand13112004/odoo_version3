@@ -50,7 +50,7 @@ export default function DriverCompliancePage() {
 
   if (loading) {
     return (
-      <div className="p-8">
+      <div className="p-4 sm:p-6 md:p-8">
         <div className="h-64 animate-pulse rounded-xl bg-[#F1F5F9]" />
       </div>
     );
@@ -68,7 +68,7 @@ export default function DriverCompliancePage() {
   });
 
   return (
-    <div className="p-8">
+    <div className="p-4 sm:p-6 md:p-8">
       <div className="mb-6">
         <h1 className="text-3xl font-bold neon-text">Driver Compliance</h1>
         <p className="mt-1 text-[#64748B]">License expiry, block expired drivers, toggle On Duty / Off Duty / Suspended</p>
